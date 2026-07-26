@@ -10,29 +10,29 @@ interface PremiumProps {
 }
 
 const plans = [
-  { id: 'monthly', name: 'Monthly', price: 9.99, period: '/month', save: null },
-  { id: 'yearly', name: 'Yearly', price: 4.99, period: '/month billed yearly', save: 'Save 50%' },
-  { id: 'lifetime', name: 'Lifetime', price: 199, period: 'one-time', save: 'Best value' },
+  { id: 'monthly', name: 'Помесячно', price: 9.99, period: '/мес', save: null },
+  { id: 'yearly', name: 'Годовой', price: 4.99, period: '/мес, оплата за год', save: 'Скидка 50%' },
+  { id: 'lifetime', name: 'Навсегда', price: 199, period: 'разовый платёж', save: 'Лучшая цена' },
 ];
 
 const features = [
-  'Unlimited AI nutrition advice from Vivi',
-  'Personalized weekly meal plans',
-  'Specialized medical nutrition support',
-  'Advanced progress analytics & insights',
-  'Custom recipe generation',
-  'Apple Health & Google Fit sync',
-  'Priority support',
-  'Ad-free experience',
+  'Безлимитные ИИ-консультации по питанию от Виви',
+  'Персональные планы питания на неделю',
+  'Специализированная медицинская поддержка по питанию',
+  'Расширенная аналитика прогресса и инсайты',
+  'Генерация рецептов на заказ',
+  'Синхронизация с Apple Health и Google Fit',
+  'Приоритетная поддержка',
+  'Работа без рекламы',
 ];
 
 export default function Premium({ currentPage, onNavigate }: PremiumProps) {
   const [selectedPlan, setSelectedPlan] = useState('yearly');
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Vivora Premium" subtitle="Unlock your full nutrition journey">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Vivora Premium" subtitle="Раскройте весь потенциал вашего пути к здоровому питанию">
       <button onClick={() => onNavigate('dashboard')} className="flex items-center gap-2 text-text-secondary hover:text-primary mb-4 text-sm lg:hidden">
-        <ArrowLeft size={16} /> Back
+        <ArrowLeft size={16} /> Назад
       </button>
 
       {/* Hero */}
@@ -46,14 +46,14 @@ export default function Premium({ currentPage, onNavigate }: PremiumProps) {
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-4 py-1.5 mb-4">
             <Crown size={14} /> <span className="text-sm font-semibold">Vivora Premium</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">Feel brighter, faster</h2>
-          <p className="text-base sm:text-lg opacity-90 mt-3 max-w-md mx-auto">Unlock the full power of your nutrition companion with personalized AI guidance.</p>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">Чувствуйте себя лучше быстрее</h2>
+          <p className="text-base sm:text-lg opacity-90 mt-3 max-w-md mx-auto">Раскройте все возможности вашего помощника по питанию с персональными ИИ-рекомендациями.</p>
         </div>
       </div>
 
       {/* Features */}
       <div className="card mb-4 sm:mb-6">
-        <h3 className="font-bold text-text-primary mb-4">Everything in Premium</h3>
+        <h3 className="font-bold text-text-primary mb-4">Всё из Premium</h3>
         <div className="grid sm:grid-cols-2 gap-3">
           {features.map((f, i) => (
             <div key={i} className="flex items-start gap-3">
@@ -91,16 +91,16 @@ export default function Premium({ currentPage, onNavigate }: PremiumProps) {
 
       {/* CTA */}
       <button className="btn-primary w-full text-base flex items-center justify-center gap-2 mb-3">
-        <Sparkles size={18} /> Start 7-day free trial
+        <Sparkles size={18} /> Начать 7-дневный бесплатный пробный период
       </button>
-      <p className="text-center text-xs text-text-secondary mb-6">Cancel anytime. No charge during trial.</p>
+      <p className="text-center text-xs text-text-secondary mb-6">Отмена в любой момент. В пробный период оплата не списывается.</p>
 
       {/* Vivi note */}
       <div className="flex items-start gap-2.5 sm:gap-3 bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl p-3 sm:p-4">
         <Vivi size={48} mood="happy" />
         <div className="flex-1 pt-1">
           <p className="text-sm text-text-primary leading-relaxed">
-            Premium is how I can give you my very best — personalized plans, deeper insights, and round-the-clock support. But the free version still has plenty of love. 💚
+            Premium — это то, как я могу дать вам самое лучшее: персональные планы, глубокие инсайты и поддержку круглосуточно. Но и в бесплатной версии достаточно заботы. 💚
           </p>
         </div>
       </div>

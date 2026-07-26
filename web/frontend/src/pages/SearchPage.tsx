@@ -23,7 +23,7 @@ export default function SearchPage({ currentPage, onNavigate }: SearchPageProps)
   const display = tab === 'favorites' ? filtered.filter((f) => f.isFavorite) : tab === 'recent' ? filtered.slice(0, 6) : filtered;
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Food Search" subtitle="Find any food, fast" showSearch>
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Поиск продуктов" subtitle="Найдите любой продукт быстро" showSearch>
       {/* Search bar */}
       <div className="flex gap-2 mb-3 sm:mb-4">
         <div className="relative flex-1">
@@ -32,7 +32,7 @@ export default function SearchPage({ currentPage, onNavigate }: SearchPageProps)
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search for a food..."
+            placeholder="Поиск продукта..."
             className="input-field pl-11"
             autoFocus
           />
@@ -48,7 +48,7 @@ export default function SearchPage({ currentPage, onNavigate }: SearchPageProps)
           onClick={() => setActiveCategory(null)}
           className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${!activeCategory ? 'bg-primary text-white' : 'bg-white border border-border text-text-secondary hover:border-primary'}`}
         >
-          All
+          Все
         </button>
         {foodCategories.map((c) => (
           <button
@@ -64,9 +64,9 @@ export default function SearchPage({ currentPage, onNavigate }: SearchPageProps)
       {/* Tabs */}
       <div className="flex gap-1 bg-white rounded-xl p-1 mb-3 sm:mb-4 shadow-soft">
         {[
-          { id: 'all', label: 'All foods' },
-          { id: 'favorites', label: 'Favorites' },
-          { id: 'recent', label: 'Recent' },
+          { id: 'all', label: 'Все продукты' },
+          { id: 'favorites', label: 'Избранное' },
+          { id: 'recent', label: 'Недавние' },
         ].map((t) => (
           <button
             key={t.id}
@@ -83,7 +83,7 @@ export default function SearchPage({ currentPage, onNavigate }: SearchPageProps)
         {display.length === 0 ? (
           <div className="text-center py-12 text-text-secondary">
             <p className="text-4xl mb-3">🔍</p>
-            <p>No foods found. Try a different search.</p>
+            <p>Продукты не найдены. Попробуйте изменить поиск.</p>
           </div>
         ) : (
           display.map((food) => (
@@ -97,8 +97,8 @@ export default function SearchPage({ currentPage, onNavigate }: SearchPageProps)
                 <p className="font-semibold text-text-primary truncate">{food.name}</p>
                 <p className="text-xs text-text-secondary">{food.serving} • {food.category}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs font-medium text-primary">{food.calories} kcal</span>
-                  <span className="text-xs text-text-secondary">• P{food.protein}g C{food.carbs}g F{food.fat}g</span>
+                  <span className="text-xs font-medium text-primary">{food.calories} ккал</span>
+                  <span className="text-xs text-text-secondary">• Б{food.protein}г У{food.carbs}г Ж{food.fat}г</span>
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
@@ -116,7 +116,7 @@ export default function SearchPage({ currentPage, onNavigate }: SearchPageProps)
       {/* Recent tip */}
       <div className="flex items-center gap-2 text-xs text-text-secondary mt-5 sm:mt-6 justify-center">
         <Clock size={14} />
-        <span>Tip: Use the barcode scanner to log packaged foods instantly</span>
+        <span>Совет: используйте сканер штрих-кодов для мгновенного добавления упакованных продуктов</span>
       </div>
     </AppShell>
   );

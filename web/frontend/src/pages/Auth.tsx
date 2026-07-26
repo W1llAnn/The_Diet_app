@@ -18,9 +18,9 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
   const [loading, setLoading] = useState(false);
 
   const titles = {
-    login: { title: 'Welcome back', subtitle: 'Let\'s continue your journey together.' },
-    register: { title: 'Create your account', subtitle: 'Your brighter relationship with food starts here.' },
-    forgot: { title: 'Reset your password', subtitle: 'We\'ll send you a link to get back in.' },
+    login: { title: 'С возвращением', subtitle: 'Продолжим путь вместе.' },
+    register: { title: 'Создайте аккаунт', subtitle: 'Ваши здоровые отношения с едой начинаются здесь.' },
+    forgot: { title: 'Сброс пароля', subtitle: 'Мы отправим ссылку для восстановления доступа.' },
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +36,7 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
         setError(resetError.message);
         return;
       }
-      alert('Password reset link sent! Check your email.');
+      alert('Письмо со ссылкой для сброса пароля отправлено! Проверьте почту.');
       onNavigate('login');
       return;
     }
@@ -56,7 +56,7 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
       }
       // Если требуется подтверждение email — сессии не будет.
       if (!data.session) {
-        setError('Check your email to confirm the account, then log in.');
+        setError('Проверьте почту, чтобы подтвердить аккаунт, затем войдите.');
         onNavigate('login');
         return;
       }
@@ -97,12 +97,12 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === 'register' && (
                 <div>
-                  <label className="block text-sm font-medium text-text-primary mb-1.5">Full name</label>
+                  <label className="block text-sm font-medium text-text-primary mb-1.5">Полное имя</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Alex Johnson"
+                    placeholder="Иван Иванов"
                     className="input-field"
                     required
                   />
@@ -125,9 +125,9 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
               {mode !== 'forgot' && (
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-sm font-medium text-text-primary">Password</label>
+                    <label className="block text-sm font-medium text-text-primary">Пароль</label>
                     {mode === 'login' && (
-                      <button type="button" onClick={() => onNavigate('forgot')} className="text-xs text-primary hover:underline">Forgot password?</button>
+                      <button type="button" onClick={() => onNavigate('forgot')} className="text-xs text-primary hover:underline">Забыли пароль?</button>
                     )}
                   </div>
                   <div className="relative">
@@ -158,11 +158,11 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
                 disabled={loading}
                 className="btn-primary w-full flex items-center justify-center gap-2 mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loading ? 'Please wait…' : (
+                {loading ? 'Пожалуйста, подождите…' : (
                   <>
-                    {mode === 'login' && 'Log in'}
-                    {mode === 'register' && 'Create account'}
-                    {mode === 'forgot' && 'Send reset link'}
+                    {mode === 'login' && 'Войти'}
+                    {mode === 'register' && 'Создать аккаунт'}
+                    {mode === 'forgot' && 'Отправить ссылку'}
                     <ArrowRight size={18} />
                   </>
                 )}
@@ -171,26 +171,26 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
 
             {mode === 'forgot' && (
               <button onClick={() => onNavigate('login')} className="btn-ghost w-full mt-3 text-sm">
-                Back to login
+                Назад ко входу
               </button>
             )}
 
             {mode === 'login' && (
               <p className="text-center text-sm text-text-secondary mt-6">
-                New to Vivora?{' '}
-                <button onClick={() => onNavigate('register')} className="text-primary font-semibold hover:underline">Create an account</button>
+                Впервые в Vivora?{' '}
+                <button onClick={() => onNavigate('register')} className="text-primary font-semibold hover:underline">Создать аккаунт</button>
               </p>
             )}
             {mode === 'register' && (
               <p className="text-center text-sm text-text-secondary mt-6">
-                Already have an account?{' '}
-                <button onClick={() => onNavigate('login')} className="text-primary font-semibold hover:underline">Log in</button>
+                Уже есть аккаунт?{' '}
+                <button onClick={() => onNavigate('login')} className="text-primary font-semibold hover:underline">Войти</button>
               </p>
             )}
 
             {mode === 'register' && (
               <p className="text-center text-xs text-text-secondary mt-4 leading-relaxed">
-                By continuing, you agree to Vivora's Terms of Service and Privacy Policy. Your health data stays private.
+                Продолжая, вы соглашаетесь с Условиями использования и Политикой конфиденциальности Vivora. Ваши данные о здоровье остаются приватными.
               </p>
             )}
           </div>
@@ -208,24 +208,24 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
             <Vivi size={140} mood="waving" />
           </div>
           <h2 className="text-3xl font-bold text-text-primary leading-tight">
-            "Hi, I'm Vivi!
-            <br />Let's grow together."
+            «Привет, я Виви!
+            <br />Будем расти вместе.»
           </h2>
           <p className="text-text-secondary mt-4 leading-relaxed">
-            I'll be your gentle companion on this journey. No judgment, no pressure — just small, happy steps toward feeling your best.
+            Я буду вашим бережным спутником в этом пути. Без осуждения и давления — только маленькие радостные шаги к лучшему самочувствию.
           </p>
           <div className="grid grid-cols-3 gap-3 mt-8">
             <div className="bg-white/60 backdrop-blur rounded-2xl p-4">
               <p className="text-2xl font-bold text-primary">50K+</p>
-              <p className="text-xs text-text-secondary">Happy users</p>
+              <p className="text-xs text-text-secondary">Счастливых пользователей</p>
             </div>
             <div className="bg-white/60 backdrop-blur rounded-2xl p-4">
               <p className="text-2xl font-bold text-primary">1M+</p>
-              <p className="text-xs text-text-secondary">Meals logged</p>
+              <p className="text-xs text-text-secondary">Записанных приёмов пищи</p>
             </div>
             <div className="bg-white/60 backdrop-blur rounded-2xl p-4">
               <p className="text-2xl font-bold text-primary">4.9★</p>
-              <p className="text-xs text-text-secondary">App rating</p>
+              <p className="text-xs text-text-secondary">Рейтинг приложения</p>
             </div>
           </div>
         </div>

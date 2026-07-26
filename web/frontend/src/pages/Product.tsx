@@ -16,9 +16,9 @@ export default function Product({ currentPage, onNavigate }: ProductProps) {
   const [quantity, setQuantity] = useState(1);
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Food Details" subtitle={food.name} showBack backPage="search">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Карточка продукта" subtitle={food.name} showBack backPage="search">
       <button onClick={() => onNavigate('search')} className="flex items-center gap-2 text-text-secondary hover:text-primary mb-4 text-sm lg:hidden">
-        <ArrowLeft size={16} /> Back to search
+        <ArrowLeft size={16} /> Назад к поиску
       </button>
 
       {/* Hero */}
@@ -31,11 +31,11 @@ export default function Product({ currentPage, onNavigate }: ProductProps) {
             <div className="flex items-center gap-3 mt-3">
               <div className="flex items-center gap-1.5 bg-primary-50 px-3 py-1.5 rounded-full">
                 <div className="w-2 h-2 bg-primary rounded-full" />
-                <span className="text-sm font-bold text-primary">Health score: {food.healthScore}</span>
+                <span className="text-sm font-bold text-primary">Индекс здоровья: {food.healthScore}</span>
               </div>
               {food.glycemicIndex !== undefined && (
                 <div className="flex items-center gap-1.5 bg-info-50 px-3 py-1.5 rounded-full">
-                  <span className="text-sm font-bold text-info-700">GI: {food.glycemicIndex}</span>
+                  <span className="text-sm font-bold text-info-700">ГИ: {food.glycemicIndex}</span>
                 </div>
               )}
             </div>
@@ -55,19 +55,19 @@ export default function Product({ currentPage, onNavigate }: ProductProps) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-3 sm:mb-5">
         <div className="card text-center">
           <p className="text-2xl font-bold text-primary">{food.calories * quantity}</p>
-          <p className="text-xs text-text-secondary mt-1">Calories</p>
+          <p className="text-xs text-text-secondary mt-1">Калории</p>
         </div>
         <div className="card text-center">
           <p className="text-2xl font-bold text-primary">{food.protein * quantity}g</p>
-          <p className="text-xs text-text-secondary mt-1">Protein</p>
+          <p className="text-xs text-text-secondary mt-1">Белки</p>
         </div>
         <div className="card text-center">
           <p className="text-2xl font-bold text-info">{food.carbs * quantity}g</p>
-          <p className="text-xs text-text-secondary mt-1">Carbs</p>
+          <p className="text-xs text-text-secondary mt-1">Углеводы</p>
         </div>
         <div className="card text-center">
           <p className="text-2xl font-bold text-accent">{food.fat * quantity}g</p>
-          <p className="text-xs text-text-secondary mt-1">Fat</p>
+          <p className="text-xs text-text-secondary mt-1">Жиры</p>
         </div>
       </div>
 
@@ -75,8 +75,8 @@ export default function Product({ currentPage, onNavigate }: ProductProps) {
       <div className="card mb-3 sm:mb-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-text-primary">Quantity</p>
-            <p className="text-xs text-text-secondary">Adjust serving size</p>
+            <p className="text-sm font-semibold text-text-primary">Порции</p>
+            <p className="text-xs text-text-secondary">Настройте размер порции</p>
           </div>
           <div className="flex items-center gap-3">
             <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-9 h-9 rounded-xl bg-cream flex items-center justify-center text-text-primary hover:bg-primary-50 transition-all text-lg font-bold">−</button>
@@ -85,14 +85,14 @@ export default function Product({ currentPage, onNavigate }: ProductProps) {
           </div>
         </div>
         <button onClick={() => onNavigate('diary')} className="btn-primary w-full mt-4 flex items-center justify-center gap-2">
-          <Plus size={18} /> Add to food diary
+          <Plus size={18} /> Добавить в дневник
         </button>
       </div>
 
       {/* Vitamins & minerals */}
       {food.vitamins && (
         <div className="card mb-3 sm:mb-5">
-          <h3 className="font-bold text-text-primary mb-3">Vitamins & minerals</h3>
+          <h3 className="font-bold text-text-primary mb-3">Витамины и минералы</h3>
           <div className="flex flex-wrap gap-2">
             {food.vitamins.map((v) => (
               <span key={v} className="tag bg-primary-50 text-primary">{v}</span>
@@ -106,7 +106,7 @@ export default function Product({ currentPage, onNavigate }: ProductProps) {
         <div className="card mb-3 sm:mb-5 border-accent-200 bg-accent-50/50">
           <div className="flex items-center gap-2 mb-2">
             <AlertCircle size={18} className="text-accent-700" />
-            <h3 className="font-bold text-text-primary">Contains allergens</h3>
+            <h3 className="font-bold text-text-primary">Содержит аллергены</h3>
           </div>
           <div className="flex flex-wrap gap-2">
             {food.allergens.map((a) => (
@@ -118,14 +118,14 @@ export default function Product({ currentPage, onNavigate }: ProductProps) {
 
       {/* Safe for */}
       <div className="card mb-3 sm:mb-5">
-        <h3 className="font-bold text-text-primary mb-3">Recommended for</h3>
+        <h3 className="font-bold text-text-primary mb-3">Рекомендовано для</h3>
         <div className="space-y-2">
           {[
-            { label: 'Diabetes-friendly', ok: food.glycemicIndex !== undefined && food.glycemicIndex < 55 },
-            { label: 'High protein diet', ok: food.protein > 15 },
-            { label: 'Low carb diet', ok: food.carbs < 10 },
-            { label: 'Heart-healthy', ok: true },
-            { label: 'Kidney-friendly', ok: food.protein < 35 },
+            { label: 'Подходит для диабетиков', ok: food.glycemicIndex !== undefined && food.glycemicIndex < 55 },
+            { label: 'Высокобелковая диета', ok: food.protein > 15 },
+            { label: 'Низкоуглеводная диета', ok: food.carbs < 10 },
+            { label: 'Полезно для сердца', ok: true },
+            { label: 'Дружелюбно к почкам', ok: food.protein < 35 },
           ].map((r) => (
             <div key={r.label} className="flex items-center gap-2">
               {r.ok ? (
@@ -143,9 +143,9 @@ export default function Product({ currentPage, onNavigate }: ProductProps) {
       <div className="flex items-start gap-2.5 sm:gap-3 bg-gradient-to-r from-primary-50 to-info-50 rounded-2xl p-3 sm:p-4">
         <Vivi size={56} mood="thinking" />
         <div className="flex-1 pt-1">
-          <p className="text-sm font-semibold text-text-primary mb-1">Vivi says</p>
+          <p className="text-sm font-semibold text-text-primary mb-1">Виви подсказывает</p>
           <p className="text-sm text-text-primary leading-relaxed">
-            Salmon is an excellent source of omega-3 fatty acids — great for your heart and brain. Pair it with leafy greens for a perfect dinner. Since you're watching your protein intake, this fits beautifully into today's plan.
+            Лосось — отличный источник жирных кислот омега-3, что прекрасно для сердца и мозга. Подавайте его с листовой зеленью — получится идеальный ужин. Поскольку вы следите за количеством белка, это блюдо отлично впишется в сегодняшний план.
           </p>
         </div>
       </div>

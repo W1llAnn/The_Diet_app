@@ -88,7 +88,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.title = 'Vivora — Your gentle nutrition companion';
+    document.title = 'Vivora — ваш бережный спутник в питании';
   }, []);
 
   // Пока не проверили сессию — не рендерим ничего тяжёлого, чтобы не мелькал логин.
@@ -134,8 +134,8 @@ function App() {
             <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Leaf size={28} className="text-white" />
             </div>
-            <p className="text-text-secondary">Page not found</p>
-            <button onClick={() => navigate('landing')} className="btn-primary mt-4">Back home</button>
+            <p className="text-text-secondary">Страница не найдена</p>
+            <button onClick={() => navigate('landing')} className="btn-primary mt-4">На главную</button>
           </div>
         </div>
       );

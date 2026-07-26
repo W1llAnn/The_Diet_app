@@ -7,16 +7,16 @@ interface SidebarProps {
 }
 
 const navItems: { icon: LucideIcon; label: string; page: Page }[] = [
-  { icon: LayoutDashboard, label: 'Dashboard', page: 'dashboard' },
-  { icon: BookOpen, label: 'Food Diary', page: 'diary' },
-  { icon: Search, label: 'Food Search', page: 'search' },
-  { icon: CalendarDays, label: 'Meal Planner', page: 'planner' },
-  { icon: ChefHat, label: 'Recipes', page: 'recipes' },
-  { icon: Bot, label: 'AI Assistant', page: 'ai' },
-  { icon: TrendingUp, label: 'Progress', page: 'progress' },
-  { icon: Trophy, label: 'Achievements', page: 'achievements' },
-  { icon: Heart, label: 'Medical', page: 'medical' },
-  { icon: User, label: 'Profile', page: 'profile' },
+  { icon: LayoutDashboard, label: 'Панель', page: 'dashboard' },
+  { icon: BookOpen, label: 'Дневник питания', page: 'diary' },
+  { icon: Search, label: 'Поиск продуктов', page: 'search' },
+  { icon: CalendarDays, label: 'Планировщик', page: 'planner' },
+  { icon: ChefHat, label: 'Рецепты', page: 'recipes' },
+  { icon: Bot, label: 'ИИ-помощник', page: 'ai' },
+  { icon: TrendingUp, label: 'Прогресс', page: 'progress' },
+  { icon: Trophy, label: 'Достижения', page: 'achievements' },
+  { icon: Heart, label: 'Медицина', page: 'medical' },
+  { icon: User, label: 'Профиль', page: 'profile' },
 ];
 
 export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
@@ -56,14 +56,14 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-primary-50 to-accent-50 text-primary hover:from-primary-100 hover:to-accent-100 transition-all"
         >
           <span className="text-base">✦</span>
-          <span className="text-sm font-semibold">Upgrade to Premium</span>
+          <span className="text-sm font-semibold">Перейти на Premium</span>
         </button>
         <button
           onClick={() => onNavigate('settings')}
           className="sidebar-item w-full text-left"
         >
           <span className="text-base">⚙</span>
-          <span className="text-sm font-medium">Settings</span>
+          <span className="text-sm font-medium">Настройки</span>
         </button>
       </div>
     </aside>

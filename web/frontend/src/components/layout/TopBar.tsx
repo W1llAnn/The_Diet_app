@@ -19,7 +19,7 @@ export default function TopBar({ title, subtitle, onNavigate, showSearch = false
             <button
               onClick={() => onNavigate(backPage || 'dashboard')}
               className="flex-shrink-0 w-9 h-9 -ml-1 rounded-lg flex items-center justify-center text-text-secondary hover:bg-primary-50 hover:text-primary transition-all active:scale-90"
-              aria-label="Back"
+              aria-label="Назад"
             >
               <ArrowLeft size={20} />
             </button>
@@ -35,7 +35,7 @@ export default function TopBar({ title, subtitle, onNavigate, showSearch = false
             <button
               onClick={() => onNavigate('search')}
               className="w-10 h-10 rounded-xl bg-white border border-border flex items-center justify-center text-text-secondary hover:bg-primary-50 hover:text-primary transition-all active:scale-90"
-              aria-label="Search"
+              aria-label="Поиск"
             >
               <SearchIcon size={18} />
             </button>

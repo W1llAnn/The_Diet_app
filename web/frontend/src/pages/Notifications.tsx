@@ -8,20 +8,20 @@ interface NotificationsProps {
 }
 
 const notifications = [
-  { id: 1, icon: Flame, color: 'bg-accent-50 text-accent-700', title: 'You\'re 80% to your calorie goal', text: 'Nicely paced! Try a light dinner to finish strong.', time: '5 min ago', unread: true },
-  { id: 2, icon: Trophy, color: 'bg-primary-50 text-primary', title: 'Achievement unlocked: Week Warrior!', text: 'You logged meals for 7 consecutive days. Amazing!', time: '2 hours ago', unread: true },
-  { id: 3, icon: Droplets, color: 'bg-info-50 text-info-700', title: 'Time to hydrate', text: 'You\'re 2 glasses short of your daily water goal.', time: '3 hours ago', unread: true },
-  { id: 4, icon: Bot, color: 'bg-primary-50 text-primary', title: 'Vivi has a tip for you', text: 'Your iron intake is a bit low today. Try adding spinach to dinner!', time: '5 hours ago', unread: false },
-  { id: 5, icon: Flame, color: 'bg-accent-50 text-accent-700', title: 'Daily summary ready', text: 'Yesterday you hit 1,920 kcal and all your macros. Great balance!', time: 'Yesterday', unread: false },
-  { id: 6, icon: Trophy, color: 'bg-primary-50 text-primary', title: 'You\'re on a 7-day streak!', text: 'Keep logging to extend it. You\'ve got this!', time: 'Yesterday', unread: false },
+  { id: 1, icon: Flame, color: 'bg-accent-50 text-accent-700', title: 'Вы на 80% близки к цели по калориям', text: 'Отличный темп! Попробуйте лёгкий ужин, чтобы завершить день достойно.', time: '5 мин назад', unread: true },
+  { id: 2, icon: Trophy, color: 'bg-primary-50 text-primary', title: 'Достижение разблокировано: Воин недели!', text: 'Вы фиксировали приёмы пищи 7 дней подряд. Здорово!', time: '2 часа назад', unread: true },
+  { id: 3, icon: Droplets, color: 'bg-info-50 text-info-700', title: 'Время попить воды', text: 'Вам не хватает 2 стаканов до дневной нормы.', time: '3 часа назад', unread: true },
+  { id: 4, icon: Bot, color: 'bg-primary-50 text-primary', title: 'У Виви есть совет для вас', text: 'Сегодня уровень железа немного низкий. Добавьте шпинат к ужину!', time: '5 часов назад', unread: false },
+  { id: 5, icon: Flame, color: 'bg-accent-50 text-accent-700', title: 'Дневной итог готов', text: 'Вчера вы набрали 1 920 ккал и выполнили все нормы по макросам. Отличный баланс!', time: 'Вчера', unread: false },
+  { id: 6, icon: Trophy, color: 'bg-primary-50 text-primary', title: 'Вы держитесь уже 7 дней подряд!', text: 'Продолжайте фиксировать приёмы пищи, чтобы увеличить серию. У вас получится!', time: 'Вчера', unread: false },
 ];
 
 export default function Notifications({ currentPage, onNavigate }: NotificationsProps) {
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Notifications" subtitle="Stay in the loop, gently">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Уведомления" subtitle="Будьте в курсе — мягко и ненавязчиво">
       <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <span className="text-sm text-text-secondary">3 unread</span>
-        <button className="text-sm text-primary font-medium hover:underline">Mark all read</button>
+        <span className="text-sm text-text-secondary">3 непрочитанных</span>
+        <button className="text-sm text-primary font-medium hover:underline">Отметить все прочитанными</button>
       </div>
 
       <div className="space-y-2 sm:space-y-2">
@@ -44,7 +44,7 @@ export default function Notifications({ currentPage, onNavigate }: Notifications
 
       <div className="text-center mt-5 sm:mt-6">
         <p className="text-xs text-text-secondary flex items-center justify-center gap-1">
-          <Check size={12} /> You're all caught up
+          <Check size={12} /> Вы прочитали всё
         </p>
       </div>
     </AppShell>

@@ -10,15 +10,15 @@ interface AboutProps {
 
 export default function About({ currentPage, onNavigate }: AboutProps) {
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="About Vivora" subtitle="Our story, our heart">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="О Vivora" subtitle="Наша история, наше сердце">
       {/* Hero */}
       <div className="text-center py-6 sm:py-8 mb-4 sm:mb-6">
         <div className="flex justify-center mb-4">
           <Vivi size={100} mood="love" />
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight">We believe food should feel good</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight">Мы верим, что еда должна приносить радость</h2>
         <p className="text-base sm:text-lg text-text-secondary mt-3 max-w-xl mx-auto leading-relaxed">
-          Vivora was born from a simple idea: nutrition guidance should be warm, personal, and never make anyone feel guilty about what they eat.
+          Vivora появилась из простой идеи: помощь в питании должна быть теплой, индивидуальной и никогда не вызывать у людей чувство вины за то, что они едят.
         </p>
       </div>
 
@@ -26,20 +26,20 @@ export default function About({ currentPage, onNavigate }: AboutProps) {
       <div className="card mb-4 sm:mb-5">
         <div className="flex items-center gap-2 mb-3">
           <Target size={20} className="text-primary" />
-          <h3 className="font-bold text-text-primary">Our mission</h3>
+          <h3 className="font-bold text-text-primary">Наша миссия</h3>
         </div>
         <p className="text-text-primary leading-relaxed">
-          To build a nutrition companion that helps every person — regardless of age, gender, or health condition — develop a healthier, happier relationship with food. We're not a calorie counter. We're a companion.
+          Создать помощника по питанию, который поможет каждому человеку — независимо от возраста, пола или состояния здоровья — выстроить более здоровые и радостные отношения с едой. Мы не считаем калории. Мы — ваш спутник.
         </p>
       </div>
 
       {/* Values */}
       <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3 mb-4 sm:mb-5">
         {[
-          { icon: Heart, title: 'Compassion first', text: 'No judgment, ever. We celebrate progress, not perfection.' },
-          { icon: Sparkles, title: 'Intelligence with warmth', text: 'AI that feels human — helpful, gentle, and genuinely caring.' },
-          { icon: Shield, title: 'Privacy by design', text: 'Your health data is yours. Encrypted, never sold, always exportable.' },
-          { icon: Users, title: 'For everyone', text: 'From teens to retirees, athletes to beginners — Vivora adapts to you.' },
+          { icon: Heart, title: 'Сочувствие прежде всего', text: 'Никаких осуждений. Мы ценим прогресс, а не совершенство.' },
+          { icon: Sparkles, title: 'Интеллект с теплом', text: 'ИИ, который ощущается по-человечески — полезный, мягкий и искренне заботливый.' },
+          { icon: Shield, title: 'Конфиденциальность по умолчанию', text: 'Ваши данные о здоровье принадлежат вам. Они зашифрованы, никогда не продаются и всегда доступны для экспорта.' },
+          { icon: Users, title: 'Для каждого', text: 'От подростков до пенсионеров, от спортсменов до новичков — Vivora подстраивается под вас.' },
         ].map((v, i) => (
           <div key={i} className="card">
             <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center mb-3">
@@ -56,10 +56,10 @@ export default function About({ currentPage, onNavigate }: AboutProps) {
         <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-6">
           {[
-            { value: '50K+', label: 'Happy users' },
-            { value: '1M+', label: 'Meals logged' },
-            { value: '6', label: 'Conditions supported' },
-            { value: '4.9★', label: 'App rating' },
+            { value: '50K+', label: 'Довольных пользователей' },
+            { value: '1M+', label: 'Зафиксированных приемов пищи' },
+            { value: '6', label: 'Поддерживаемых состояний' },
+            { value: '4.9★', label: 'Рейтинг приложения' },
           ].map((s, i) => (
             <div key={i}>
               <p className="text-3xl font-bold">{s.value}</p>
@@ -71,15 +71,15 @@ export default function About({ currentPage, onNavigate }: AboutProps) {
 
       {/* Story */}
       <div className="card mb-4 sm:mb-5">
-        <h3 className="font-bold text-text-primary mb-3">The story of Vivi</h3>
+        <h3 className="font-bold text-text-primary mb-3">История Виви</h3>
         <p className="text-text-primary leading-relaxed mb-3">
-          Vivi started as a small sprout — a simple idea that nutrition tools could be kind. Most apps felt cold, clinical, or punishing. We knew there was a better way.
+          Виви появилась как маленький росток — из простой идеи, что инструменты для питания могут быть добрыми. Большинство приложений казались холодными, сухими или наказывающими. Мы знали, что есть лучший путь.
         </p>
         <p className="text-text-primary leading-relaxed mb-3">
-          So we built Vivora around a gentle companion that learns who you are and walks beside you. Whether you're managing diabetes, trying to lose weight, or just want to eat a bit better, Vivi is there with a helpful nudge and a warm word.
+          Поэтому мы создали Vivora вокруг нежного помощника, который узнаёт вас и идёт рядом. Берёте ли вы под контроль диабет, пытаетесь сбросить вес или просто хотите питаться чуть лучше — Виви рядом с полезным советом и тёплым словом.
         </p>
         <p className="text-text-primary leading-relaxed">
-          Today, Vivi helps tens of thousands of people feel brighter — one small, happy step at a time.
+          Сегодня Виви помогает десяткам тысяч людей чувствовать себя лучше — шаг за шагом, с маленькими радостями.
         </p>
       </div>
 
@@ -88,8 +88,8 @@ export default function About({ currentPage, onNavigate }: AboutProps) {
         <div className="flex justify-center mb-3">
           <Vivi size={64} mood="waving" />
         </div>
-        <h3 className="font-bold text-text-primary">Made with care</h3>
-        <p className="text-sm text-text-secondary mt-1">By a small team of nutritionists, designers, and engineers who care.</p>
+        <h3 className="font-bold text-text-primary">Создано с заботой</h3>
+        <p className="text-sm text-text-secondary mt-1">Маленькой командой нутрициологов, дизайнеров и инженеров, которым не всё равно.</p>
       </div>
 
       {/* Footer */}
@@ -100,8 +100,8 @@ export default function About({ currentPage, onNavigate }: AboutProps) {
           </div>
           <span className="font-bold text-text-primary">Vivora</span>
         </div>
-        <p className="text-xs text-text-secondary">© 2026 Vivora. Made with 💚 for everyone.</p>
-        <p className="text-xs text-text-secondary mt-1">Not a substitute for professional medical advice.</p>
+        <p className="text-xs text-text-secondary">© 2026 Vivora. Сделано с 💚 для каждого.</p>
+        <p className="text-xs text-text-secondary mt-1">Не является заменой профессиональной медицинской консультации.</p>
       </div>
     </AppShell>
   );

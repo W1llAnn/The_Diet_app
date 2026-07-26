@@ -8,57 +8,57 @@ interface OnboardingProps {
 }
 
 const goals = [
-  { id: 'lose', label: 'Lose weight', emoji: '⚖️' },
-  { id: 'gain', label: 'Gain weight', emoji: '💪' },
-  { id: 'maintain', label: 'Maintain weight', emoji: '🌱' },
-  { id: 'build', label: 'Build muscle', emoji: '🏋️' },
-  { id: 'energy', label: 'More energy', emoji: '⚡' },
-  { id: 'health', label: 'Eat healthier', emoji: '🥗' },
-  { id: 'manage', label: 'Manage a condition', emoji: '🩺' },
-  { id: 'sleep', label: 'Better sleep', emoji: '😴' },
+  { id: 'lose', label: 'Снизить вес', emoji: '⚖️' },
+  { id: 'gain', label: 'Набрать вес', emoji: '💪' },
+  { id: 'maintain', label: 'Поддерживать вес', emoji: '🌱' },
+  { id: 'build', label: 'Нарастить мышцы', emoji: '🏋️' },
+  { id: 'energy', label: 'Больше энергии', emoji: '⚡' },
+  { id: 'health', label: 'Питаться здоровее', emoji: '🥗' },
+  { id: 'manage', label: 'Контроль состояния', emoji: '🩺' },
+  { id: 'sleep', label: 'Лучший сон', emoji: '😴' },
 ];
 
 const activityLevels = [
-  { id: 'sedentary', label: 'Sedentary', desc: 'Little or no exercise', factor: 1.2 },
-  { id: 'light', label: 'Lightly active', desc: 'Exercise 1-3 days/week', factor: 1.375 },
-  { id: 'moderate', label: 'Moderately active', desc: 'Exercise 3-5 days/week', factor: 1.55 },
-  { id: 'very', label: 'Very active', desc: 'Exercise 6-7 days/week', factor: 1.725 },
-  { id: 'extra', label: 'Extra active', desc: 'Hard daily exercise or job', factor: 1.9 },
+  { id: 'sedentary', label: 'Сидячий образ жизни', desc: 'Мало или без упражнений', factor: 1.2 },
+  { id: 'light', label: 'Лёгкая активность', desc: 'Упражнения 1–3 дня/неделю', factor: 1.375 },
+  { id: 'moderate', label: 'Умеренная активность', desc: 'Упражнения 3–5 дней/неделю', factor: 1.55 },
+  { id: 'very', label: 'Высокая активность', desc: 'Упражнения 6–7 дней/неделю', factor: 1.725 },
+  { id: 'extra', label: 'Очень высокая активность', desc: 'Ежедневные тяжёлые тренировки или работа', factor: 1.9 },
 ];
 
 const dietaryPrefs = [
-  { id: 'none', label: 'No restrictions', emoji: '✅' },
-  { id: 'vegetarian', label: 'Vegetarian', emoji: '🥕' },
-  { id: 'vegan', label: 'Vegan', emoji: '🌱' },
-  { id: 'pescatarian', label: 'Pescatarian', emoji: '🐟' },
-  { id: 'keto', label: 'Keto', emoji: '🥑' },
-  { id: 'paleo', label: 'Paleo', emoji: '🍖' },
-  { id: 'halal', label: 'Halal', emoji: '☪️' },
-  { id: 'kosher', label: 'Kosher', emoji: '✡️' },
+  { id: 'none', label: 'Без ограничений', emoji: '✅' },
+  { id: 'vegetarian', label: 'Вегетарианство', emoji: '🥕' },
+  { id: 'vegan', label: 'Веганство', emoji: '🌱' },
+  { id: 'pescatarian', label: 'Пескетарианство', emoji: '🐟' },
+  { id: 'keto', label: 'Кето', emoji: '🥑' },
+  { id: 'paleo', label: 'Палео', emoji: '🍖' },
+  { id: 'halal', label: 'Халяль', emoji: '☪️' },
+  { id: 'kosher', label: 'Кошер', emoji: '✡️' },
 ];
 
 const allergies = [
-  'Gluten', 'Dairy', 'Eggs', 'Nuts', 'Peanuts', 'Shellfish', 'Soy', 'Sesame', 'Fish',
+  'Глютен', 'Молочное', 'Яйца', 'Орехи', 'Арахис', 'Морепродукты', 'Соя', 'Кунжут', 'Рыба',
 ];
 
 const conditions = [
-  { id: 'diabetes', label: 'Diabetes', emoji: '🩸' },
-  { id: 'obesity', label: 'Obesity', emoji: '⚖️' },
-  { id: 'hypertension', label: 'Hypertension', emoji: '❤️' },
-  { id: 'kidney', label: 'Kidney disease', emoji: '🫘' },
-  { id: 'digestive', label: 'Digestive disorders', emoji: '🌿' },
-  { id: 'pcos', label: 'PCOS', emoji: '🌸' },
-  { id: 'cholesterol', label: 'High cholesterol', emoji: '🫀' },
-  { id: 'none', label: 'None of these', emoji: '✅' },
+  { id: 'diabetes', label: 'Диабет', emoji: '🩸' },
+  { id: 'obesity', label: 'Ожирение', emoji: '⚖️' },
+  { id: 'hypertension', label: 'Гипертония', emoji: '❤️' },
+  { id: 'kidney', label: 'Заболевание почек', emoji: '🫘' },
+  { id: 'digestive', label: 'Расстройства пищеварения', emoji: '🌿' },
+  { id: 'pcos', label: 'СПКЯ', emoji: '🌸' },
+  { id: 'cholesterol', label: 'Высокий холестерин', emoji: '🫀' },
+  { id: 'none', label: 'Ничего из этого', emoji: '✅' },
 ];
 
 const habits = [
-  { id: 'water', label: 'Drink more water', emoji: '💧' },
-  { id: 'breakfast', label: 'Eat breakfast daily', emoji: '🍳' },
-  { id: 'veggies', label: 'More vegetables', emoji: '🥬' },
-  { id: 'lesssugar', label: 'Reduce sugar', emoji: '🍬' },
-  { id: 'cooking', label: 'Cook at home', emoji: '👨‍🍳' },
-  { id: 'mindful', label: 'Mindful eating', emoji: '🧘' },
+  { id: 'water', label: 'Пить больше воды', emoji: '💧' },
+  { id: 'breakfast', label: 'Завтракать каждый день', emoji: '🍳' },
+  { id: 'veggies', label: 'Больше овощей', emoji: '🥬' },
+  { id: 'lesssugar', label: 'Меньше сахара', emoji: '🍬' },
+  { id: 'cooking', label: 'Готовить дома', emoji: '👨‍🍳' },
+  { id: 'mindful', label: 'Осознанное питание', emoji: '🧘' },
 ];
 
 const steps = ['Welcome', 'Goals', 'About you', 'Body', 'Activity', 'Conditions', 'Allergies', 'Diet', 'Target', 'Habits'];
@@ -107,7 +107,7 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           </div>
           <span className="text-xs text-text-secondary font-medium whitespace-nowrap">{step + 1}/{steps.length}</span>
         </div>
-        <button onClick={() => onNavigate('dashboard')} className="text-sm text-text-secondary hover:text-primary flex-shrink-0">Skip</button>
+        <button onClick={() => onNavigate('dashboard')} className="text-sm text-text-secondary hover:text-primary flex-shrink-0">Пропустить</button>
       </header>
 
       <main className="flex-1 flex items-center justify-center p-4 lg:p-8">
@@ -118,14 +118,14 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
               <div className="flex justify-center mb-6">
                 <Vivi size={120} mood="waving" />
               </div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-text-primary">Welcome to Vivora!</h1>
+              <h1 className="text-3xl lg:text-4xl font-bold text-text-primary">Добро пожаловать в Vivora!</h1>
               <p className="text-lg text-text-secondary mt-4 max-w-md mx-auto leading-relaxed">
-                I'm Vivi, your nutrition companion. Let's spend a few minutes getting to know you, so I can help you feel your best.
+                Я Виви, ваш персональный помощник по питанию. Потратим пару минут, чтобы узнать вас получше, и я помогу вам чувствовать себя на все сто.
               </p>
               <div className="bg-white rounded-2xl p-5 mt-8 shadow-soft text-left max-w-md mx-auto">
                 <div className="flex items-center gap-3">
                   <Vivi size={40} mood="happy" animate={false} />
-                  <p className="text-sm text-text-primary">This takes about 3 minutes. You can change anything later.</p>
+                  <p className="text-sm text-text-primary">Это займёт около 3 минут. Всё можно будет изменить позже.</p>
                 </div>
               </div>
             </div>
@@ -134,8 +134,8 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Step 1: Goals */}
           {step === 1 && (
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">What are your goals?</h2>
-              <p className="text-text-secondary mt-2">Pick all that resonate. We'll build your plan around them.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Какие у вас цели?</h2>
+              <p className="text-text-secondary mt-2">Выберите всё, что откликается. Мы построим план вокруг них.</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 mt-5 sm:mt-6">
                 {goals.map((g) => (
                   <button
@@ -156,13 +156,13 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Step 2: Gender */}
           {step === 2 && (
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">What's your gender?</h2>
-              <p className="text-text-secondary mt-2">This helps us calculate your nutritional needs accurately.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Ваш пол?</h2>
+              <p className="text-text-secondary mt-2">Это поможет точно рассчитать ваши потребности в питании.</p>
               <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mt-5 sm:mt-6">
                 {[
-                  { id: 'female', label: 'Female', emoji: '👩' },
-                  { id: 'male', label: 'Male', emoji: '👨' },
-                  { id: 'other', label: 'Other', emoji: '🧑' },
+                  { id: 'female', label: 'Женский', emoji: '👩' },
+                  { id: 'male', label: 'Мужской', emoji: '👨' },
+                  { id: 'other', label: 'Другое', emoji: '🧑' },
                 ].map((g) => (
                   <button
                     key={g.id}
@@ -182,11 +182,11 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Step 3: Age */}
           {step === 3 && (
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">How old are you?</h2>
-              <p className="text-text-secondary mt-2">Your age affects your calorie and nutrient needs.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Сколько вам лет?</h2>
+              <p className="text-text-secondary mt-2">Возраст влияет на ваши потребности в калориях и нутриентах.</p>
               <div className="bg-white rounded-2xl p-8 mt-6 shadow-soft text-center">
                 <p className="text-6xl font-bold text-primary">{data.age}</p>
-                <p className="text-text-secondary mt-1">years old</p>
+                <p className="text-text-secondary mt-1">лет</p>
                 <input
                   type="range"
                   min={13}
@@ -205,23 +205,23 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Step 4: Height & Weight */}
           {step === 4 && (
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Your body</h2>
-              <p className="text-text-secondary mt-2">This stays private. We use it to personalize your plan.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Ваше тело</h2>
+              <p className="text-text-secondary mt-2">Это останется в секрете. Мы используем это, чтобы персонализировать ваш план.</p>
               <div className="grid sm:grid-cols-2 gap-4 mt-6">
                 <div className="bg-white rounded-2xl p-6 shadow-soft text-center">
-                  <p className="text-sm text-text-secondary">Height</p>
+                  <p className="text-sm text-text-secondary">Рост</p>
                   <p className="text-4xl font-bold text-primary mt-2">{data.height}<span className="text-lg text-text-secondary ml-1">cm</span></p>
                   <input type="range" min={120} max={220} value={data.height} onChange={(e) => setData({ ...data, height: +e.target.value })} className="w-full mt-4" />
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-soft text-center">
-                  <p className="text-sm text-text-secondary">Weight</p>
+                  <p className="text-sm text-text-secondary">Вес</p>
                   <p className="text-4xl font-bold text-primary mt-2">{data.weight}<span className="text-lg text-text-secondary ml-1">kg</span></p>
                   <input type="range" min={30} max={200} value={data.weight} onChange={(e) => setData({ ...data, weight: +e.target.value })} className="w-full mt-4" />
                 </div>
               </div>
               <div className="bg-primary-50 rounded-2xl p-4 mt-4 flex items-center gap-3">
                 <Vivi size={36} mood="happy" animate={false} />
-                <p className="text-sm text-text-primary">Your BMI is <span className="font-bold">{(data.weight / Math.pow(data.height / 100, 2)).toFixed(1)}</span> — that's a great starting point!</p>
+                <p className="text-sm text-text-primary">Ваш ИМТ — <span className="font-bold">{(data.weight / Math.pow(data.height / 100, 2)).toFixed(1)}</span> — отличная отправная точка!</p>
               </div>
             </div>
           )}
@@ -229,8 +229,8 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Step 5: Activity */}
           {step === 5 && (
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">How active are you?</h2>
-              <p className="text-text-secondary mt-2">Be honest — there's no wrong answer here.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Какой у вас уровень активности?</h2>
+              <p className="text-text-secondary mt-2">Будьте честны — неправильных ответов нет.</p>
               <div className="space-y-3 mt-6">
                 {activityLevels.map((a) => (
                   <button
@@ -254,8 +254,8 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Step 6: Conditions */}
           {step === 6 && (
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Any medical conditions?</h2>
-              <p className="text-text-secondary mt-2">This helps Vivi tailor recommendations. All optional.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Есть ли у вас заболевания?</h2>
+              <p className="text-text-secondary mt-2">Это поможет Виви адаптировать рекомендации. Всё по желанию.</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 mt-5 sm:mt-6">
                 {conditions.map((c) => (
                   <button
@@ -276,8 +276,8 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Step 7: Allergies */}
           {step === 7 && (
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Any food allergies?</h2>
-              <p className="text-text-secondary mt-2">We'll make sure to flag these in every recommendation.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Есть ли у вас пищевая аллергия?</h2>
+              <p className="text-text-secondary mt-2">Мы обязательно отметим это в каждой рекомендации.</p>
               <div className="flex flex-wrap gap-2 mt-6">
                 {allergies.map((a) => (
                   <button
@@ -297,8 +297,8 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Step 8: Diet */}
           {step === 8 && (
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Dietary preferences?</h2>
-              <p className="text-text-secondary mt-2">How do you like to eat? We'll respect it always.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Предпочтения в питании?</h2>
+              <p className="text-text-secondary mt-2">Как вам нравится питаться? Мы всегда будем это учитывать.</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 mt-5 sm:mt-6">
                 {dietaryPrefs.map((d) => (
                   <button
@@ -319,13 +319,13 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Step 9: Target weight */}
           {step === 9 && (
             <div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">What's your target weight?</h2>
-              <p className="text-text-secondary mt-2">No rush — we'll get there gently, together.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Каков ваш целевой вес?</h2>
+              <p className="text-text-secondary mt-2">Не торопимся — дойдём мягко и вместе.</p>
               <div className="bg-white rounded-2xl p-8 mt-6 shadow-soft text-center">
                 <p className="text-6xl font-bold text-primary">{data.targetWeight}<span className="text-lg text-text-secondary ml-1">kg</span></p>
                 <input type="range" min={40} max={180} value={data.targetWeight} onChange={(e) => setData({ ...data, targetWeight: +e.target.value })} className="w-full mt-6" />
                 <p className="text-sm text-text-secondary mt-4">
-                  That's <span className="font-bold text-primary">{Math.abs(data.weight - data.targetWeight)} kg</span> {data.targetWeight < data.weight ? 'to lose' : 'to gain'} — totally doable!
+                  Это <span className="font-bold text-primary">{Math.abs(data.weight - data.targetWeight)} kg</span> {data.targetWeight < data.weight ? 'сбросить' : 'набрать'} — вполне реально!
                 </p>
               </div>
             </div>
@@ -337,8 +337,8 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
               <div className="flex justify-center mb-4">
                 <Vivi size={80} mood="excited" />
               </div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Let's build some habits!</h2>
-              <p className="text-text-secondary mt-2">Pick a few daily habits you'd like to work on. Small steps, big change.</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-text-primary">Давайте выработаем привычки!</h2>
+              <p className="text-text-secondary mt-2">Выберите несколько ежедневных привычек, над которыми хотите поработать. Маленькие шаги — большие перемены.</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 mt-5 sm:mt-6">
                 {habits.map((h) => (
                   <button
@@ -359,10 +359,10 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           {/* Navigation */}
           <div className="flex items-center justify-between mt-6 sm:mt-8">
             <button onClick={back} className="btn-ghost flex items-center gap-2">
-              <ArrowLeft size={18} /> Back
+              <ArrowLeft size={18} /> Назад
             </button>
             <button onClick={next} className="btn-primary flex items-center gap-2">
-              {step === steps.length - 1 ? 'Enter Vivora' : 'Continue'}
+              {step === steps.length - 1 ? 'Войти в Vivora' : 'Продолжить'}
               <ArrowRight size={18} />
             </button>
           </div>

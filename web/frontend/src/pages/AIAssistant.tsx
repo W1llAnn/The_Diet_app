@@ -11,17 +11,17 @@ interface AIProps {
 }
 
 const suggestions = [
-  'What should I eat for dinner?',
-  'Compare quinoa vs brown rice',
-  'I have diabetes — is banana okay?',
-  'Suggest a high-protein breakfast',
+  'Что съесть на ужин?',
+  'Сравните киноа и бурый рис',
+  'У меня диабет — можно ли банан?',
+  'Предложите белковый завтрак',
 ];
 
 const aiResponses: Record<string, string> = {
-  'What should I eat for dinner?': "Great question! Based on your goals and today's intake, I'd suggest grilled salmon with quinoa and roasted vegetables. You're a bit low on protein and omega-3s today, and salmon is perfect for both. Want me to add it to your meal plan?",
-  'Compare quinoa vs brown rice': "Both are great whole grains! Quinoa has more protein (8g vs 5g per cup), is a complete protein, and has a lower glycemic index (53 vs 50). Brown rice has slightly more fiber. For your diabetes management, quinoa's complete protein profile gives it a slight edge. Both are excellent choices!",
-  'I have diabetes — is banana okay?': "Yes, in moderation! Bananas have a medium glycemic index (51). A small banana is perfectly fine. To minimize blood sugar impact, pair it with a protein or fat — like a handful of almonds or a spoon of peanut butter. Berries and cherries are even lower-GI alternatives if you want variety. 🍌",
-  'Suggest a high-protein breakfast': "Here are three high-protein breakfasts I think you'll love:\n\n1. Greek yogurt parfait (17g protein) — layer yogurt, berries, and a sprinkle of granola\n2. Veggie omelette with 2 eggs (24g protein) — add spinach and tomatoes\n3. Protein smoothie (25g protein) — banana, Greek yogurt, almond butter, and a scoop of protein\n\nWant me to add one to your diary?",
+  'Что съесть на ужин?': "Отличный вопрос! Судя по вашим целям и сегодняшнему рациону, я бы предложила гриль из лосося с киноа и запечёнными овощами. Сегодня вам немного не хватает белка и омега-3, и лосось отлично восполнит оба пробела. Добавить в план питания?",
+  'Сравните киноа и бурый рис': "Оба — отличные цельные злаки! В киноа больше белка (8 г против 5 г на чашку), это полноценный белок, а её гликемический индекс ниже (53 против 50). В буром рисе чуть больше клетчатки. Для контроля диабета полноценный белковый профиль киноа даёт небольшое преимущество. Но оба варианта — прекрасный выбор!",
+  'У меня диабет — можно ли банан?': "Да, в умеренных количествах! У бананов средний гликемический индекс (51). Небольшой банан — вполне нормально. Чтобы снизить влияние на уровень сахара, сочетайте его с белком или жирами — например, с горстью миндаля или ложкой арахисовой пасты. Ягоды и вишня — ещё более низкогликемичные альтернативы, если хочется разнообразия. 🍌",
+  'Предложите белковый завтрак': "Вот три белковых завтрака, которые вам понравятся:\n\n1. Пафф из греческого йогурта (17 г белка) — слоями выложите йогурт, ягоды и немного гранолы\n2. Овощной омлет из 2 яиц (24 г белка) — добавьте шпинат и помидоры\n3. Протеиновый смузи (25 г белка) — банан, греческий йогурт, миндальная паста и мерная ложка протеина\n\nДобавить один из них в дневник?",
 };
 
 export default function AIAssistant({ currentPage, onNavigate }: AIProps) {
@@ -29,7 +29,7 @@ export default function AIAssistant({ currentPage, onNavigate }: AIProps) {
     {
       id: '1',
       role: 'assistant',
-      content: "Hi Alex! I'm Vivi, your nutrition buddy. Ask me anything — meal ideas, food comparisons, diet advice, or just say hi! I'm here to help, never to judge. 💚",
+      content: "Привет, Алекс! Я Виви, твоя напарница по питанию. Спрашивай о чём угодно — идеи блюд, сравнение продуктов, советы по диете или просто скажи привет! Я здесь, чтобы помочь, а не осуждать. 💚",
       timestamp: 'now',
     },
   ]);
@@ -49,14 +49,14 @@ export default function AIAssistant({ currentPage, onNavigate }: AIProps) {
     setTyping(true);
 
     setTimeout(() => {
-      const response = aiResponses[text] || "That's a great question! Based on your profile and goals, I'd recommend focusing on whole foods, staying hydrated, and balancing your plate with protein, healthy fats, and fiber-rich carbs. Would you like me to suggest specific meals or look up a food for you?";
+      const response = aiResponses[text] || "Отличный вопрос! Судя по вашему профилю и целям, я бы рекомендовала сосредоточиться на цельных продуктах, пить достаточно воды и сбалансировать тарелку белком, полезными жирами и углеводами, богатыми клетчаткой. Предложить конкретные блюда или посмотреть какой-нибудь продукт для вас?";
       setMessages((m) => [...m, { id: Date.now().toString(), role: 'assistant', content: response, timestamp: 'now' }]);
       setTyping(false);
     }, 1400);
   };
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Vivi AI Assistant" subtitle="Your nutrition buddy, anytime">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="ИИ-ассистент Виви" subtitle="Твоя напарница по питанию в любое время">
       <div className="flex flex-col h-[calc(100vh-220px)] lg:h-[calc(100vh-160px)]">
         {/* Messages */}
         <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4 pb-4">
@@ -116,7 +116,7 @@ export default function AIAssistant({ currentPage, onNavigate }: AIProps) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && send(input)}
-              placeholder="Ask Vivi anything..."
+              placeholder="Спросить Виви о чём угодно..."
               className="flex-1 bg-transparent border-none outline-none text-text-primary placeholder-text-secondary text-sm py-2"
             />
             <button className="w-9 h-9 rounded-xl bg-cream flex items-center justify-center text-text-secondary hover:bg-primary-50 transition-all flex-shrink-0">

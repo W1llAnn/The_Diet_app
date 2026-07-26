@@ -7,11 +7,11 @@ interface BottomNavProps {
 }
 
 const tabs: { icon: LucideIcon; label: string; page: Page }[] = [
-  { icon: LayoutDashboard, label: 'Home', page: 'dashboard' },
-  { icon: BookOpen, label: 'Diary', page: 'diary' },
-  { icon: Bot, label: 'AI', page: 'ai' },
-  { icon: TrendingUp, label: 'Progress', page: 'progress' },
-  { icon: User, label: 'Profile', page: 'profile' },
+  { icon: LayoutDashboard, label: 'Главная', page: 'dashboard' },
+  { icon: BookOpen, label: 'Дневник', page: 'diary' },
+  { icon: Bot, label: 'ИИ', page: 'ai' },
+  { icon: TrendingUp, label: 'Прогресс', page: 'progress' },
+  { icon: User, label: 'Профиль', page: 'profile' },
 ];
 
 export default function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
@@ -32,7 +32,7 @@ export default function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
                   <div className="w-11 h-11 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-soft -mt-5 border-[3px] border-white">
                     <Icon size={20} className="text-white" />
                   </div>
-                  <span className="text-[10px] font-semibold text-primary mt-0.5">AI</span>
+                  <span className="text-[10px] font-semibold text-primary mt-0.5">ИИ</span>
                 </>
               ) : (
                 <>

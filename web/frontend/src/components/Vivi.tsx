@@ -188,7 +188,7 @@ export default function Vivi({ size = 80, mood = 'happy', className = '', animat
       height={s}
       viewBox={`0 0 ${s} ${s}`}
       className={`${animate ? (mood === 'waving' ? 'vivi-wave' : 'vivi-float') : ''} ${className}`}
-      aria-label="Vivi, your nutrition buddy"
+      aria-label="Виви, твой компаньон по питанию"
     >
       {bodies[mood] || bodies.happy}
     </svg>

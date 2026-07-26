@@ -14,7 +14,7 @@ export default function Achievements({ currentPage, onNavigate }: AchievementsPr
   const locked = achievements.filter((a) => !a.unlocked);
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Achievements" subtitle="Celebrate every win, big and small">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Достижения" subtitle="Празднуйте каждую победу, большую и маленькую">
       {/* Streak hero */}
       <div className="bg-gradient-primary rounded-3xl p-5 sm:p-6 text-white mb-4 sm:mb-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -23,9 +23,9 @@ export default function Achievements({ currentPage, onNavigate }: AchievementsPr
             <Flame size={32} />
           </div>
           <div>
-            <p className="text-sm opacity-90">Current streak</p>
-            <p className="text-3xl font-bold">7 days!</p>
-            <p className="text-sm opacity-90 mt-1">Keep logging to extend it</p>
+            <p className="text-sm opacity-90">Текущая серия</p>
+            <p className="text-3xl font-bold">7 дней подряд!</p>
+            <p className="text-sm opacity-90 mt-1">Продолжайте записывать, чтобы продлить её</p>
           </div>
         </div>
       </div>
@@ -35,22 +35,22 @@ export default function Achievements({ currentPage, onNavigate }: AchievementsPr
         <div className="card text-center">
           <Trophy size={20} className="text-primary mx-auto mb-1" />
           <p className="text-2xl font-bold text-text-primary">{unlocked.length}</p>
-          <p className="text-xs text-text-secondary">Unlocked</p>
+          <p className="text-xs text-text-secondary">Получено</p>
         </div>
         <div className="card text-center">
           <Flame size={20} className="text-accent mx-auto mb-1" />
           <p className="text-2xl font-bold text-text-primary">7</p>
-          <p className="text-xs text-text-secondary">Day streak</p>
+          <p className="text-xs text-text-secondary">Дней подряд</p>
         </div>
         <div className="card text-center">
           <TrendingUp size={20} className="text-info mx-auto mb-1" />
           <p className="text-2xl font-bold text-text-primary">42</p>
-          <p className="text-xs text-text-secondary">Total points</p>
+          <p className="text-xs text-text-secondary">Всего очков</p>
         </div>
       </div>
 
       {/* Unlocked */}
-      <h3 className="font-bold text-text-primary mb-3">Recently unlocked</h3>
+      <h3 className="font-bold text-text-primary mb-3">Недавно получено</h3>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 mb-4 sm:mb-6">
         {unlocked.map((a) => (
           <div key={a.id} className="card-hover text-center">
@@ -63,7 +63,7 @@ export default function Achievements({ currentPage, onNavigate }: AchievementsPr
       </div>
 
       {/* Locked */}
-      <h3 className="font-bold text-text-primary mb-3">Coming up next</h3>
+      <h3 className="font-bold text-text-primary mb-3">Скоро в пути</h3>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 mb-4 sm:mb-6">
         {locked.map((a) => (
           <div key={a.id} className="card text-center opacity-90">
@@ -77,7 +77,7 @@ export default function Achievements({ currentPage, onNavigate }: AchievementsPr
             <p className="text-xs text-text-secondary mt-1">{a.description}</p>
             <div className="mt-3">
               <div className="flex justify-between text-xs text-text-secondary mb-1">
-                <span>Progress</span>
+                <span>Прогресс</span>
                 <span className="font-bold text-primary">{a.progress}%</span>
               </div>
               <div className="h-1.5 bg-border rounded-full overflow-hidden">
@@ -93,7 +93,7 @@ export default function Achievements({ currentPage, onNavigate }: AchievementsPr
         <Vivi size={56} mood="excited" />
         <div className="flex-1 pt-1">
           <p className="text-sm text-text-primary leading-relaxed">
-            Three achievements in one week — that's fantastic! You're building habits that last. Just 3 more days until your next one. I believe in you! 🌱
+            Три достижения за одну неделю — это фантастика! Вы формируете привычки, которые останутся с вами. Осталось всего 3 дня до следующего. Я верю в вас! 🌱
           </p>
         </div>
       </div>

@@ -10,18 +10,18 @@ interface ProfileProps {
 
 export default function Profile({ currentPage, onNavigate }: ProfileProps) {
   const menuItems: { icon: LucideIcon; label: string; page: Page; badge?: string }[] = [
-    { icon: Target, label: 'My goals & profile', page: 'settings' },
-    { icon: TrendingUp, label: 'Progress & stats', page: 'progress' },
-    { icon: Award, label: 'Achievements', page: 'achievements' },
-    { icon: Heart, label: 'Medical conditions', page: 'medical' },
-    { icon: Crown, label: 'Premium subscription', page: 'premium', badge: 'Pro' },
-    { icon: Bell, label: 'Notifications', page: 'notifications' },
-    { icon: SettingsIcon, label: 'Settings', page: 'settings' },
-    { icon: HelpCircle, label: 'Help Center', page: 'help' },
+    { icon: Target, label: 'Мои цели и профиль', page: 'settings' },
+    { icon: TrendingUp, label: 'Прогресс и статистика', page: 'progress' },
+    { icon: Award, label: 'Достижения', page: 'achievements' },
+    { icon: Heart, label: 'Состояние здоровья', page: 'medical' },
+    { icon: Crown, label: 'Премиум-подписка', page: 'premium', badge: 'Pro' },
+    { icon: Bell, label: 'Уведомления', page: 'notifications' },
+    { icon: SettingsIcon, label: 'Настройки', page: 'settings' },
+    { icon: HelpCircle, label: 'Центр помощи', page: 'help' },
   ];
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Profile" subtitle="Your account and preferences">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Профиль" subtitle="Ваш аккаунт и предпочтения">
       {/* Profile header */}
       <div className="card mb-4 sm:mb-5">
         <div className="flex items-center gap-3 sm:gap-4">
@@ -30,11 +30,11 @@ export default function Profile({ currentPage, onNavigate }: ProfileProps) {
             <h2 className="text-lg sm:text-xl font-bold text-text-primary truncate">Alex Johnson</h2>
             <p className="text-sm text-text-secondary truncate">alex@example.com</p>
             <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
-              <span className="tag bg-primary-50 text-primary text-xs">🌱 Member since Jan 2026</span>
-              <span className="tag bg-accent-50 text-accent-700 text-xs">🔥 7-day streak</span>
+              <span className="tag bg-primary-50 text-primary text-xs">🌱 С нами с января 2026</span>
+              <span className="tag bg-accent-50 text-accent-700 text-xs">🔥 Серия 7 дней</span>
             </div>
           </div>
-          <button className="btn-secondary text-sm py-2 flex-shrink-0">Edit</button>
+          <button className="btn-secondary text-sm py-2 flex-shrink-0">Редактировать</button>
         </div>
       </div>
 
@@ -42,15 +42,15 @@ export default function Profile({ currentPage, onNavigate }: ProfileProps) {
       <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-4 sm:mb-6">
         <div className="card text-center">
           <p className="text-2xl font-bold text-primary">70.0</p>
-          <p className="text-xs text-text-secondary">Current weight (kg)</p>
+          <p className="text-xs text-text-secondary">Текущий вес (кг)</p>
         </div>
         <div className="card text-center">
           <p className="text-2xl font-bold text-info">28</p>
-          <p className="text-xs text-text-secondary">BMI</p>
+          <p className="text-xs text-text-secondary">ИМТ</p>
         </div>
         <div className="card text-center">
           <p className="text-2xl font-bold text-accent">2,000</p>
-          <p className="text-xs text-text-secondary">Daily calorie goal</p>
+          <p className="text-xs text-text-secondary">Дневная цель по калориям</p>
         </div>
       </div>
 
@@ -59,7 +59,7 @@ export default function Profile({ currentPage, onNavigate }: ProfileProps) {
         <Vivi size={48} mood="love" />
         <div className="flex-1 pt-1">
           <p className="text-sm text-text-primary leading-relaxed">
-            We've been on this journey together for 6 months, Alex. I'm so proud of how far you've come! 💚
+            Мы идём этим путём вместе уже 6 месяцев, Алекс. Я так горжусь тобой! 💚
           </p>
         </div>
       </div>
@@ -81,11 +81,11 @@ export default function Profile({ currentPage, onNavigate }: ProfileProps) {
         <div className="h-px bg-border my-1" />
         <button className="w-full flex items-center gap-3 px-3 py-3.5 rounded-xl hover:bg-red-50 transition-all text-left text-red-500">
           <LogOut size={18} />
-          <span className="flex-1 text-sm font-medium">Log out</span>
+          <span className="flex-1 text-sm font-medium">Выйти</span>
         </button>
       </div>
 
-      <p className="text-center text-xs text-text-secondary mt-6 mb-2">Vivora v1.0.0 · Made with 💚</p>
+      <p className="text-center text-xs text-text-secondary mt-6 mb-2">Vivora v1.0.0 · Сделано с 💚</p>
     </AppShell>
   );
 }

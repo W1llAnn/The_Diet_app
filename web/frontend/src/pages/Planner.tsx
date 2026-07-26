@@ -9,79 +9,79 @@ interface PlannerProps {
   onNavigate: (page: Page) => void;
 }
 
-const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const meals = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
+const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+const meals = ['Завтрак', 'Обед', 'Ужин', 'Перекус'];
 
 const plan: Record<string, Record<string, { emoji: string; name: string; cals: number }>> = {
-  Mon: {
-    Breakfast: { emoji: '🥣', name: 'Overnight oats & berries', cals: 320 },
-    Lunch: { emoji: '🥗', name: 'Grilled chicken salad', cals: 480 },
-    Dinner: { emoji: '🐟', name: 'Salmon & quinoa', cals: 540 },
-    Snack: { emoji: '🍎', name: 'Apple & almonds', cals: 180 },
+  Пн: {
+    Завтрак: { emoji: '🥣', name: 'Ленивая овсянка с ягодами', cals: 320 },
+    Обед: { emoji: '🥗', name: 'Салат с курицей гриль', cals: 480 },
+    Ужин: { emoji: '🐟', name: 'Лосось и киноа', cals: 540 },
+    Перекус: { emoji: '🍎', name: 'Яблоко и миндаль', cals: 180 },
   },
-  Tue: {
-    Breakfast: { emoji: '🫐', name: 'Berry smoothie bowl', cals: 290 },
-    Lunch: { emoji: '🥑', name: 'Avocado toast & egg', cals: 420 },
-    Dinner: { emoji: '🍲', name: 'Lentil vegetable soup', cals: 380 },
-    Snack: { emoji: '🥛', name: 'Greek yogurt', cals: 100 },
+  Вт: {
+    Завтрак: { emoji: '🫐', name: 'Боул с ягодным смузи', cals: 290 },
+    Обед: { emoji: '🥑', name: 'Тост с авокадо и яйцом', cals: 420 },
+    Ужин: { emoji: '🍲', name: 'Чечевичный овощной суп', cals: 380 },
+    Перекус: { emoji: '🥛', name: 'Греческий йогурт', cals: 100 },
   },
-  Wed: {
-    Breakfast: { emoji: '🍳', name: 'Veggie omelette', cals: 310 },
-    Lunch: { emoji: '🌯', name: 'Turkey & hummus wrap', cals: 450 },
-    Dinner: { emoji: '🍗', name: 'Chicken & brown rice', cals: 560 },
-    Snack: { emoji: '🥕', name: 'Carrot sticks & hummus', cals: 150 },
+  Ср: {
+    Завтрак: { emoji: '🍳', name: 'Овощной омлет', cals: 310 },
+    Обед: { emoji: '🌯', name: 'Ролл с индейкой и хумусом', cals: 450 },
+    Ужин: { emoji: '🍗', name: 'Курица и бурый рис', cals: 560 },
+    Перекус: { emoji: '🥕', name: 'Морковные палочки и хумус', cals: 150 },
   },
-  Thu: {
-    Breakfast: { emoji: '🥣', name: 'Chia pudding', cals: 280 },
-    Lunch: { emoji: '🥗', name: 'Quinoa Buddha bowl', cals: 460 },
-    Dinner: { emoji: '🍝', name: 'Whole wheat pasta', cals: 520 },
-    Snack: { emoji: '🍌', name: 'Banana & peanut butter', cals: 200 },
+  Чт: {
+    Завтрак: { emoji: '🥣', name: 'Чиа-пудинг', cals: 280 },
+    Обед: { emoji: '🥗', name: 'Боул Будда с киноа', cals: 460 },
+    Ужин: { emoji: '🍝', name: 'Цельнозерновые макароны', cals: 520 },
+    Перекус: { emoji: '🍌', name: 'Банан и арахисовая паста', cals: 200 },
   },
-  Fri: {
-    Breakfast: { emoji: '🥞', name: 'Banana oat pancakes', cals: 340 },
-    Lunch: { emoji: '🥙', name: 'Falafel & tabbouleh', cals: 440 },
-    Dinner: { emoji: '🍤', name: 'Shrimp stir-fry', cals: 500 },
-    Snack: { emoji: '🫐', name: 'Mixed berries', cals: 90 },
+  Пт: {
+    Завтрак: { emoji: '🥞', name: 'Овсяно-банановые панкейки', cals: 340 },
+    Обед: { emoji: '🥙', name: 'Фалафель и табуле', cals: 440 },
+    Ужин: { emoji: '🍤', name: 'Стир-фрай с креветками', cals: 500 },
+    Перекус: { emoji: '🫐', name: 'Ассорти из ягод', cals: 90 },
   },
-  Sat: {
-    Breakfast: { emoji: '🍳', name: 'Avocado eggs benedict', cals: 380 },
-    Lunch: { emoji: '🥗', name: 'Mediterranean salad', cals: 420 },
-    Dinner: { emoji: '🍗', name: 'Roast chicken & veg', cals: 580 },
-    Snack: { emoji: '🍫', name: 'Dark chocolate (1 oz)', cals: 170 },
+  Сб: {
+    Завтрак: { emoji: '🍳', name: 'Яйца бенедикт с авокадо', cals: 380 },
+    Обед: { emoji: '🥗', name: 'Средиземноморский салат', cals: 420 },
+    Ужин: { emoji: '🍗', name: 'Запечённая курица и овощи', cals: 580 },
+    Перекус: { emoji: '🍫', name: 'Тёмный шоколад (28 г)', cals: 170 },
   },
-  Sun: {},
+  Вс: {},
 };
 
 const shoppingList = [
-  { item: 'Salmon fillets', qty: '2', checked: false },
-  { item: 'Quinoa', qty: '500g', checked: true },
-  { item: 'Greek yogurt', qty: '4 cups', checked: false },
-  { item: 'Avocados', qty: '3', checked: false },
-  { item: 'Mixed berries', qty: '300g', checked: true },
-  { item: 'Chicken breast', qty: '500g', checked: false },
-  { item: 'Brown rice', qty: '1 kg', checked: false },
-  { item: 'Spinach', qty: '2 bunches', checked: false },
-  { item: 'Almonds', qty: '200g', checked: true },
-  { item: 'Olive oil', qty: '1 bottle', checked: false },
+  { item: 'Филе лосося', qty: '2', checked: false },
+  { item: 'Киноа', qty: '500 г', checked: true },
+  { item: 'Греческий йогурт', qty: '4 чашки', checked: false },
+  { item: 'Авокадо', qty: '3', checked: false },
+  { item: 'Ассорти из ягод', qty: '300 г', checked: true },
+  { item: 'Куриная грудка', qty: '500 г', checked: false },
+  { item: 'Бурый рис', qty: '1 кг', checked: false },
+  { item: 'Шпинат', qty: '2 пучка', checked: false },
+  { item: 'Миндаль', qty: '200 г', checked: true },
+  { item: 'Оливковое масло', qty: '1 бутылка', checked: false },
 ];
 
 export default function Planner({ currentPage, onNavigate }: PlannerProps) {
-  const [selectedDay, setSelectedDay] = useState('Mon');
+  const [selectedDay, setSelectedDay] = useState('Пн');
   const [listChecked, setListChecked] = useState<Record<string, boolean>>(
     Object.fromEntries(shoppingList.map((s) => [s.item, s.checked]))
   );
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Meal Planner" subtitle="Your week, beautifully planned">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Планировщик питания" subtitle="Ваша неделя, красиво спланированная">
       {/* AI generate */}
       <div className="flex items-start gap-2.5 sm:gap-3 bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
         <Vivi size={56} mood="excited" />
         <div className="flex-1 pt-1">
           <p className="text-sm text-text-primary leading-relaxed mb-3">
-            I've planned your week based on your goals and preferences. Want me to regenerate it or swap any meal?
+            Я спланировала вашу неделю с учётом целей и предпочтений. Хотите, чтобы я обновила план или заменила какое-то блюдо?
           </p>
           <button className="btn-primary text-sm flex items-center gap-2 w-fit">
-            <Sparkles size={16} /> Regenerate plan with AI
+            <Sparkles size={16} /> Обновить план с ИИ
           </button>
         </div>
       </div>
@@ -91,7 +91,7 @@ export default function Planner({ currentPage, onNavigate }: PlannerProps) {
         <button className="w-9 h-9 rounded-xl bg-white border border-border flex items-center justify-center hover:bg-primary-50 transition-all">
           <ChevronLeft size={18} className="text-text-secondary" />
         </button>
-        <span className="font-semibold text-text-primary">July 22 – 28, 2026</span>
+        <span className="font-semibold text-text-primary">22–28 июля 2026</span>
         <button className="w-9 h-9 rounded-xl bg-white border border-border flex items-center justify-center hover:bg-primary-50 transition-all">
           <ChevronRight size={18} className="text-text-secondary" />
         </button>
@@ -124,7 +124,7 @@ export default function Planner({ currentPage, onNavigate }: PlannerProps) {
               <div key={meal} className="card">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-semibold text-text-primary">{meal}</h3>
-                  {entry && <span className="text-sm text-text-secondary">{entry.cals} kcal</span>}
+                  {entry && <span className="text-sm text-text-secondary">{entry.cals} ккал</span>}
                 </div>
                 {entry ? (
                   <div className="flex items-center gap-3 p-3 bg-cream rounded-xl">
@@ -132,11 +132,11 @@ export default function Planner({ currentPage, onNavigate }: PlannerProps) {
                     <div className="flex-1">
                       <p className="text-sm font-semibold text-text-primary">{entry.name}</p>
                     </div>
-                    <button onClick={() => onNavigate('recipes')} className="text-xs text-primary font-medium hover:underline">Swap</button>
+                    <button onClick={() => onNavigate('recipes')} className="text-xs text-primary font-medium hover:underline">Заменить</button>
                   </div>
                 ) : (
                   <button onClick={() => onNavigate('search')} className="w-full p-3 border-2 border-dashed border-border rounded-xl text-text-secondary hover:border-primary hover:text-primary transition-all text-sm font-medium">
-                    + Add {meal.toLowerCase()}
+                    + Добавить {meal.toLowerCase()}
                   </button>
                 )}
               </div>
@@ -148,7 +148,7 @@ export default function Planner({ currentPage, onNavigate }: PlannerProps) {
         <div className="card h-fit">
           <div className="flex items-center gap-2 mb-4">
             <ShoppingBag size={18} className="text-primary" />
-            <h3 className="font-bold text-text-primary">Shopping list</h3>
+            <h3 className="font-bold text-text-primary">Список покупок</h3>
           </div>
           <div className="space-y-1.5">
             {shoppingList.map((s) => (
@@ -165,7 +165,7 @@ export default function Planner({ currentPage, onNavigate }: PlannerProps) {
               </button>
             ))}
           </div>
-          <button className="btn-secondary w-full mt-4 text-sm py-2">Share list</button>
+          <button className="btn-secondary w-full mt-4 text-sm py-2">Поделиться списком</button>
         </div>
       </div>
     </AppShell>

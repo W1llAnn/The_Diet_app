@@ -12,34 +12,34 @@ interface MedicalProps {
 
 const conditionDetails: Record<string, { foods: string[]; avoid: string[]; tips: string[] }> = {
   diabetes: {
-    foods: ['Leafy greens', 'Whole grains', 'Beans & lentils', 'Berries', 'Fatty fish', 'Nuts'],
-    avoid: ['Sugary drinks', 'Refined carbs', 'Processed snacks', 'White bread'],
-    tips: ['Choose low-GI foods (GI < 55)', 'Pair carbs with protein or fat', 'Eat smaller, frequent meals', 'Monitor portion sizes'],
+    foods: ['Листовая зелень', 'Цельнозерновые', 'Бобовые и чечевица', 'Ягоды', 'Жирная рыба', 'Орехи'],
+    avoid: ['Сладкие напитки', 'Рафинированные углеводы', 'Промышленные снеки', 'Белый хлеб'],
+    tips: ['Выбирайте продукты с низким ГИ (ГИ < 55)', 'Сочетайте углеводы с белком или жирами', 'Ешьте чаще, но меньшими порциями', 'Контролируйте размер порций'],
   },
   obesity: {
-    foods: ['Vegetables', 'Lean proteins', 'Whole grains', 'Fruits', 'Legumes', 'Water'],
-    avoid: ['Sugary drinks', 'Fast food', 'Fried foods', 'Excessive snacking'],
-    tips: ['Focus on portion control', 'Eat mindfully without screens', 'Plan meals ahead', 'Stay hydrated'],
+    foods: ['Овощи', 'Нежирные белки', 'Цельнозерновые', 'Фрукты', 'Бобовые', 'Вода'],
+    avoid: ['Сладкие напитки', 'Фастфуд', 'Жареное', 'Частые перекусы'],
+    tips: ['Контролируйте порции', 'Ешьте осознанно, без экранов', 'Планируйте питание заранее', 'Пейте достаточно воды'],
   },
   hypertension: {
-    foods: ['Leafy greens', 'Berries', 'Bananas', 'Oats', 'Beets', 'Salmon'],
-    avoid: ['High-sodium foods', 'Processed meats', 'Canned soups', 'Excessive salt'],
-    tips: ['Follow DASH diet principles', 'Limit sodium to 1500mg/day', 'Increase potassium intake', 'Reduce caffeine'],
+    foods: ['Листовая зелень', 'Ягоды', 'Бананы', 'Овсянка', 'Свёкла', 'Лосось'],
+    avoid: ['Продукты с высоким содержанием натрия', 'Колбасные изделия', 'Консервированные супы', 'Избыток соли'],
+    tips: ['Придерживайтесь принципов диеты DASH', 'Ограничьте натрий до 1500 мг/день', 'Увеличьте потребление калия', 'Сократите кофеин'],
   },
   kidney: {
-    foods: ['Cauliflower', 'Blueberries', 'Egg whites', 'Garlic', 'Olive oil', 'Cabbage'],
-    avoid: ['Dark colas', 'Avocados', 'Whole wheat bread', 'Bananas (high potassium)'],
-    tips: ['Monitor protein intake', 'Limit phosphorus-rich foods', 'Watch potassium levels', 'Stay hydrated moderately'],
+    foods: ['Цветная капуста', 'Черника', 'Яичные белки', 'Чеснок', 'Оливковое масло', 'Капуста'],
+    avoid: ['Тёмные колы', 'Авокадо', 'Цельнозерновой хлеб', 'Бананы (много калия)'],
+    tips: ['Контролируйте потребление белка', 'Ограничьте продукты, богатые фосфором', 'Следите за уровнем калия', 'Пейте воду умеренно'],
   },
   digestive: {
-    foods: ['Oatmeal', 'Bananas', 'Ginger', 'Yogurt (probiotics)', 'Fennel', 'White rice'],
-    avoid: ['Spicy foods', 'High-FODMAP foods', 'Excessive caffeine', 'Fried foods'],
-    tips: ['Try low-FODMAP diet', 'Eat slowly and chew well', 'Identify trigger foods', 'Consider probiotics'],
+    foods: ['Овсянка', 'Бананы', 'Имбирь', 'Йогурт (пробиотики)', 'Фенхель', 'Белый рис'],
+    avoid: ['Острая пища', 'Продукты с высоким содержанием FODMAP', 'Избыток кофеина', 'Жареное'],
+    tips: ['Попробуйте диету с низким содержанием FODMAP', 'Ешьте медленно и тщательно пережёвывайте', 'Определите продукты-триггеры', 'Подумайте о пробиотиках'],
   },
   allergies: {
-    foods: ['Fresh whole foods', 'Alternative grains', 'Substitute proteins'],
-    avoid: ['Specific allergens (personalized)', 'Cross-contaminated foods'],
-    tips: ['Always read labels', 'Carry emergency contacts', 'Inform restaurants', 'Check for hidden allergens'],
+    foods: ['Свежие цельные продукты', 'Альтернативные злаки', 'Белки-заменители'],
+    avoid: ['Конкретные аллергены (индивидуально)', 'Продукты с перекрёстным загрязнением'],
+    tips: ['Всегда читайте этикетки', 'Держите под рукой экстренные контакты', 'Предупреждайте рестораны', 'Проверяйте скрытые аллергены'],
   },
 };
 
@@ -48,12 +48,12 @@ export default function Medical({ currentPage, onNavigate }: MedicalProps) {
   const details = conditionDetails[selected];
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Medical Nutrition" subtitle="Personalized support for your condition">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Медицинское питание" subtitle="Персональная поддержка при вашем заболевании">
       {/* Disclaimer */}
       <div className="flex items-start gap-2.5 sm:gap-3 bg-info-50 rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
         <AlertCircle size={20} className="text-info-700 flex-shrink-0 mt-0.5" />
         <p className="text-sm text-text-primary leading-relaxed">
-          Vivora provides nutrition guidance, not medical advice. Always consult your doctor before making dietary changes for a medical condition.
+          Vivora даёт рекомендации по питанию, а не медицинские советы. Всегда консультируйтесь с врачом перед изменением диеты при заболевании.
         </p>
       </div>
 
@@ -82,7 +82,7 @@ export default function Medical({ currentPage, onNavigate }: MedicalProps) {
             <div className="w-8 h-8 bg-primary-50 rounded-lg flex items-center justify-center">
               <Check size={16} className="text-primary" />
             </div>
-            <h3 className="font-bold text-text-primary">Recommended foods</h3>
+            <h3 className="font-bold text-text-primary">Рекомендуемые продукты</h3>
           </div>
           <div className="flex flex-wrap gap-2">
             {details.foods.map((f) => (
@@ -97,7 +97,7 @@ export default function Medical({ currentPage, onNavigate }: MedicalProps) {
             <div className="w-8 h-8 bg-accent-50 rounded-lg flex items-center justify-center">
               <AlertCircle size={16} className="text-accent-700" />
             </div>
-            <h3 className="font-bold text-text-primary">Foods to limit</h3>
+            <h3 className="font-bold text-text-primary">Продукты, которые стоит ограничить</h3>
           </div>
           <div className="flex flex-wrap gap-2">
             {details.avoid.map((f) => (
@@ -109,7 +109,7 @@ export default function Medical({ currentPage, onNavigate }: MedicalProps) {
 
       {/* Tips */}
       <div className="card mb-4 sm:mb-6">
-        <h3 className="font-bold text-text-primary mb-4">Helpful tips</h3>
+        <h3 className="font-bold text-text-primary mb-4">Полезные советы</h3>
         <div className="space-y-3">
           {details.tips.map((tip, i) => (
             <div key={i} className="flex items-start gap-3">
@@ -126,12 +126,12 @@ export default function Medical({ currentPage, onNavigate }: MedicalProps) {
       <div className="flex items-start gap-2.5 sm:gap-3 bg-gradient-to-r from-primary-50 to-info-50 rounded-2xl p-3 sm:p-4 mb-4">
         <Vivi size={56} mood="thinking" />
         <div className="flex-1 pt-1">
-          <p className="text-sm font-semibold text-text-primary mb-1">Vivi's personalized advice</p>
+          <p className="text-sm font-semibold text-text-primary mb-1">Персональный совет от Виви</p>
           <p className="text-sm text-text-primary leading-relaxed">
-            Based on your {medicalConditions.find((c) => c.id === selected)?.name.toLowerCase()} profile, I've adjusted your meal recommendations. Your weekly plan now prioritizes {details.foods[0].toLowerCase()} and similar foods. Want me to show you recipes that fit?
+            На основе вашего профиля ({medicalConditions.find((c) => c.id === selected)?.name.toLowerCase()}) я скорректировала рекомендации по питанию. Ваш недельный план теперь отдаёт приоритет продуктам вроде «{details.foods[0].toLowerCase()}». Показать подходящие рецепты?
           </p>
           <button onClick={() => onNavigate('recipes')} className="btn-primary text-sm mt-3 flex items-center gap-2 w-fit">
-            Show me recipes <ArrowRight size={14} />
+            Показать рецепты <ArrowRight size={14} />
           </button>
         </div>
       </div>

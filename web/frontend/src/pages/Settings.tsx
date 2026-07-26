@@ -30,7 +30,7 @@ export default function Settings({ currentPage, onNavigate, user, isAdmin }: Set
   );
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Settings" subtitle="Make Vivora yours">
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Настройки" subtitle="Настройте Vivora под себя">
       {/* Текущий пользователь */}
       {user && (
         <div className="card p-4 mb-4 sm:mb-5 flex items-center gap-3">
@@ -44,7 +44,7 @@ export default function Settings({ currentPage, onNavigate, user, isAdmin }: Set
                 <Shield size={12} /> Administrator
               </span>
             ) : (
-              <p className="text-xs text-text-secondary">Standard account</p>
+              <p className="text-xs text-text-secondary">Обычный аккаунт</p>
             )}
           </div>
         </div>
@@ -52,10 +52,10 @@ export default function Settings({ currentPage, onNavigate, user, isAdmin }: Set
 
       {/* Account */}
       <div className="card p-2 mb-4 sm:mb-5">
-        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Account</p>
+        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Аккаунт</p>
         {[
-          { icon: User, label: 'Personal information', action: () => onNavigate('profile') },
-          { icon: Lock, label: 'Change password', action: () => onNavigate('forgot') },
+          { icon: User, label: 'Личные данные', action: () => onNavigate('profile') },
+          { icon: Lock, label: 'Сменить пароль', action: () => onNavigate('forgot') },
         ].map((item, i) => (
           <button key={i} onClick={item.action} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-cream transition-all text-left">
             <item.icon size={18} className="text-text-secondary" />
@@ -67,13 +67,13 @@ export default function Settings({ currentPage, onNavigate, user, isAdmin }: Set
 
       {/* Notifications */}
       <div className="card p-2 mb-4 sm:mb-5">
-        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Notifications</p>
+        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Уведомления</p>
         {[
-          { key: 'meal', label: 'Meal reminders' },
-          { key: 'water', label: 'Water reminders' },
-          { key: 'achievements', label: 'Achievement alerts' },
-          { key: 'weekly', label: 'Weekly summary' },
-          { key: 'ai', label: 'Vivi tips & motivation' },
+          { key: 'meal', label: 'Напоминания о еде' },
+          { key: 'water', label: 'Напоминания о воде' },
+          { key: 'achievements', label: 'Уведомления о достижениях' },
+          { key: 'weekly', label: 'Недельный отчёт' },
+          { key: 'ai', label: 'Советы и мотивация от Виви' },
         ].map((n) => (
           <div key={n.key} className="flex items-center gap-3 px-3 py-3 rounded-xl">
             <Bell size={18} className="text-text-secondary" />
@@ -85,28 +85,28 @@ export default function Settings({ currentPage, onNavigate, user, isAdmin }: Set
 
       {/* Preferences */}
       <div className="card p-2 mb-4 sm:mb-5">
-        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Preferences</p>
+        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Предпочтения</p>
         <div className="flex items-center gap-3 px-3 py-3 rounded-xl">
           <Globe size={18} className="text-text-secondary" />
-          <span className="flex-1 text-sm font-medium text-text-primary">Units</span>
+          <span className="flex-1 text-sm font-medium text-text-primary">Единицы</span>
           <div className="flex gap-1 bg-cream rounded-lg p-1">
-            <button onClick={() => setUnits('metric')} className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${units === 'metric' ? 'bg-white text-primary shadow-soft' : 'text-text-secondary'}`}>Metric</button>
-            <button onClick={() => setUnits('imperial')} className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${units === 'imperial' ? 'bg-white text-primary shadow-soft' : 'text-text-secondary'}`}>Imperial</button>
+            <button onClick={() => setUnits('metric')} className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${units === 'metric' ? 'bg-white text-primary shadow-soft' : 'text-text-secondary'}`}>Метрические</button>
+            <button onClick={() => setUnits('imperial')} className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${units === 'imperial' ? 'bg-white text-primary shadow-soft' : 'text-text-secondary'}`}>Имперские</button>
           </div>
         </div>
         <div className="flex items-center gap-3 px-3 py-3 rounded-xl">
           <Moon size={18} className="text-text-secondary" />
-          <span className="flex-1 text-sm font-medium text-text-primary">Dark mode</span>
+          <span className="flex-1 text-sm font-medium text-text-primary">Тёмная тема</span>
           <Toggle on={darkMode} onClick={() => setDarkMode(!darkMode)} />
         </div>
       </div>
 
       {/* Privacy */}
       <div className="card p-2 mb-4 sm:mb-5">
-        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Privacy</p>
+        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Конфиденциальность</p>
         {[
-          { key: 'analytics', label: 'Share usage analytics' },
-          { key: 'shareData', label: 'Share data with partners' },
+          { key: 'analytics', label: 'Делиться статистикой' },
+          { key: 'shareData', label: 'Делиться данными с партнёрами' },
         ].map((p) => (
           <div key={p.key} className="flex items-center gap-3 px-3 py-3 rounded-xl">
             <DataIcon size={18} className="text-text-secondary" />
@@ -118,9 +118,9 @@ export default function Settings({ currentPage, onNavigate, user, isAdmin }: Set
 
       {/* Support */}
       <div className="card p-2 mb-4 sm:mb-5">
-        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Support</p>
+        <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Поддержка</p>
         {[
-          { icon: HelpCircle, label: 'Help Center', action: () => onNavigate('help') },
+          { icon: HelpCircle, label: 'Центр помощи', action: () => onNavigate('help') },
         ].map((item, i) => (
           <button key={i} onClick={item.action} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-cream transition-all text-left">
             <item.icon size={18} className="text-text-secondary" />
@@ -135,7 +135,7 @@ export default function Settings({ currentPage, onNavigate, user, isAdmin }: Set
           onClick={handleLogout}
           className="w-full flex items-center justify-center gap-2 px-3 py-3 rounded-xl border border-border text-sm font-medium text-text-secondary hover:bg-cream hover:text-text-primary transition-all mb-4"
         >
-          <LogOut size={16} /> Log out
+          <LogOut size={16} /> Выйти
         </button>
       )}
 

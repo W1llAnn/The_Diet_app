@@ -10,29 +10,29 @@ interface RecipesProps {
   onNavigate: (page: Page) => void;
 }
 
-const filters = ['All', 'AI Recipes', 'High Protein', 'Vegetarian', 'Vegan', 'Gluten-Free', 'Low GI', 'Quick (< 20 min)'];
+const filters = ['Все', 'Рецепты ИИ', 'Много белка', 'Вегетарианское', 'Веганское', 'Без глютена', 'Низкий ГИ', 'Быстрые (< 20 мин)'];
 
 export default function Recipes({ currentPage, onNavigate }: RecipesProps) {
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [activeFilter, setActiveFilter] = useState('Все');
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
 
   const filtered = recipes.filter((r) => {
-    if (activeFilter === 'All') return true;
-    if (activeFilter === 'AI Recipes') return r.ai;
+    if (activeFilter === 'Все') return true;
+    if (activeFilter === 'Рецепты ИИ') return r.ai;
     return r.tags.some((t) => t.toLowerCase().includes(activeFilter.toLowerCase()));
   });
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Recipes" subtitle="Healthy, delicious, made for you" showSearch>
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Рецепты" subtitle="Полезная, вкусная еда — для вас" showSearch>
       {/* AI banner */}
       <div className="flex items-start gap-2.5 sm:gap-3 bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
         <Vivi size={56} mood="excited" />
         <div className="flex-1 pt-1">
           <p className="text-sm text-text-primary leading-relaxed mb-3">
-            Tell me what's in your fridge and I'll whip up a healthy recipe just for you!
+            Расскажите, что у вас в холодильнике, и я приготовлю для вас полезный рецепт!
           </p>
           <button className="btn-primary text-sm flex items-center gap-2 w-fit">
-            <Sparkles size={16} /> Generate a custom recipe
+            <Sparkles size={16} /> Создать рецепт с ИИ
           </button>
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function Recipes({ currentPage, onNavigate }: RecipesProps) {
               <span className="text-6xl group-hover:scale-110 transition-transform">{r.emoji}</span>
               {r.ai && (
                 <span className="absolute top-3 left-3 bg-primary text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 font-medium">
-                  <Sparkles size={10} /> AI
+                  <Sparkles size={10} /> Создано ИИ
                 </span>
               )}
               <button
@@ -74,7 +74,7 @@ export default function Recipes({ currentPage, onNavigate }: RecipesProps) {
             <h3 className="font-bold text-text-primary">{r.name}</h3>
             <div className="flex items-center gap-3 mt-2 text-xs text-text-secondary">
               <span className="flex items-center gap-1"><Clock size={12} /> {r.time}</span>
-              <span className="flex items-center gap-1"><Flame size={12} /> {r.calories} kcal</span>
+              <span className="flex items-center gap-1"><Flame size={12} /> {r.calories} ккал</span>
               <span className="flex items-center gap-1">● {r.difficulty}</span>
             </div>
             <div className="flex flex-wrap gap-1.5 mt-3">
@@ -87,7 +87,7 @@ export default function Recipes({ currentPage, onNavigate }: RecipesProps) {
                 <Star size={12} className="text-accent fill-accent" />
                 <span className="text-xs font-bold text-text-primary">{r.healthScore}</span>
               </div>
-              <button className="ml-auto text-xs text-primary font-medium hover:underline">View recipe →</button>
+              <button className="ml-auto text-xs text-primary font-medium hover:underline">Открыть рецепт →</button>
             </div>
           </div>
         ))}
