@@ -4,6 +4,7 @@ import type { Page } from '@/App';
 import AppShell from '@/components/layout/AppShell';
 import Vivi from '@/components/Vivi';
 import { useProfile, useWeight } from '@/lib/hooks';
+import { supabase } from '@/lib/supabase';
 
 interface ProfileProps {
   currentPage: Page;
@@ -36,7 +37,7 @@ const CONDITIONS = [
 ];
 
 export default function Profile({ currentPage, onNavigate }: ProfileProps) {
-  const { profile, update } = useProfile();
+  const { profile } = useProfile();
   const { logs: weightLogs, log: logWeight } = useWeight(7);
 
   const menuItems: { icon: LucideIcon; label: string; page: Page; badge?: string }[] = [
@@ -89,24 +90,95 @@ export default function Profile({ currentPage, onNavigate }: ProfileProps) {
   const saveHealth = async () => {
     setSavingForm(true);
     setFormError(null);
-    const res = await update({
-      sex: (form.sex || null) as 'male' | 'female' | null,
+
+    // Полная трассировка: на каждом шаге пишем в консоль, чтобы видеть, где стопорится.
+    console.log('[saveHealth] старт, form =', form);
+
+    // Надёжно получаем uid напрямую (не через хук) — с fallback'ом на getUser().
+    let uid: string | null = null;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      uid = session?.user?.id ?? null;
+      if (!uid) {
+        const { data: { user } } = await supabase.auth.getUser();
+        uid = user?.id ?? null;
+      }
+    } catch (e) {
+      console.error('[saveHealth] ошибка получения сессии:', e);
+    }
+    console.log('[saveHealth] uid =', uid);
+
+    if (!uid) {
+      setFormError('Не удалось определить пользователя. Войдите заново.');
+      setSavingForm(false);
+      return;
+    }
+
+    // Патч: только валидные поля, без is_admin.
+    const patch = {
+      sex: form.sex || null,
       age: form.age,
       height: form.height,
       activity: form.activity,
-      goal: form.goal as 'maintain' | 'lose' | 'gain',
+      goal: form.goal,
       condition: form.condition,
       onboarding_completed: true,
-    });
-    await logWeight(form.weight);
+    };
+    console.log('[saveHealth] patch =', patch);
+
+    // Прямой UPDATE (БД точно работает — проверено SQL под пользователем).
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(patch)
+      .eq('id', uid)
+      .select()
+      .maybeSingle();
+    console.log('[saveHealth] результат update:', { data, error });
+
+    // Вес — отдельной записью.
+    const weightRes = await logWeight(form.weight);
+    console.log('[saveHealth] вес записан:', weightRes);
+
     setSavingForm(false);
-    if (!res) {
-      setFormError('Не удалось сохранить. Проверьте подключение и права.');
+
+    if (error) {
+      console.error('[saveHealth] ошибка:', error.code, error.message);
+      setFormError(`Ошибка БД: ${error.message}`);
       return;
     }
+    if (!data) {
+      // БД могла обновиться, но RLS не пустить чтение — перечитаем профиль.
+      console.warn('[saveHealth] update вернул пусто, перечитываем профиль');
+      const { data: fresh } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle();
+      if (fresh) {
+        setProfileLocally(fresh);
+        setFormDirty(false);
+        setFormSaved(true);
+        setTimeout(() => setFormSaved(false), 2500);
+        return;
+      }
+    }
+
+    setProfileLocally(data);
     setFormDirty(false);
     setFormSaved(true);
     setTimeout(() => setFormSaved(false), 2500);
+  };
+
+  // Локальное обновление состояния профиля без перезагрузки.
+  const setProfileLocally = (p: typeof profile) => {
+    // useProfile хранит состояние внутри себя; обновим локальный form из свежих данных.
+    if (p) {
+      setForm({
+        sex: p.sex ?? '',
+        age: p.age ?? 28,
+        height: p.height ?? 170,
+        weight: form.weight, // вес берём из формы (только что сохранён в weight_log)
+        activity: p.activity ?? 'sedentary',
+        goal: p.goal ?? 'maintain',
+        condition: p.condition ?? 'healthy',
+      });
+    }
   };
 
   // Производные значения для шапки/статистики.
