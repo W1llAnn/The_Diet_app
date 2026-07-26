@@ -109,14 +109,23 @@ export function useProfile() {
   const update = useCallback(async (patch: Partial<Profile>) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
-    // upsert вместо update: если строки профиля ещё нет (например, юзер заведён
-    // до триггера авто-создания) — она создаётся, иначе обновляется.
+    // upsert по id: если строки нет — создаётся, иначе обновляется.
+    // onConflict делает поведение однозначным (UPDATE существующей строки).
     const { data, error } = await supabase
       .from('profiles')
-      .upsert({ id: user.id, email: user.email, ...patch })
+      .upsert(
+        { id: user.id, email: user.email, ...patch },
+        { onConflict: 'id', ignoreDuplicates: false }
+      )
       .select()
       .maybeSingle();
-    if (error) { console.error('[useProfile] update:', error.message); return null; }
+    if (error) {
+      console.error('[useProfile] update error:', error.code, error.message, error.details, patch);
+      return null;
+    }
+    if (!data) {
+      console.error('[useProfile] update вернул пусто — вероятно RLS блокирует чтение после записи');
+    }
     setProfile(data);
     return data;
   }, []);
