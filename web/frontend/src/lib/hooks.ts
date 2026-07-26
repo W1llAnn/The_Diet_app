@@ -107,14 +107,28 @@ export function useProfile() {
   }, []);
 
   const update = useCallback(async (patch: Partial<Profile>) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
+    // Надёжно получаем uid: getSession (локально) + getUser (на сервере) fallback.
+    // Без этого race condition: сессия восстанавливается асинхронно, и на момент
+    // клика 'Сохранить' её может ещё не быть → getUser() вернёт null.
+    let uid: string | null = null;
+    let email: string | null = null;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) { uid = session.user.id; email = session.user.email ?? null; }
+    if (!uid) {
+      const { data: { user }, error: userErr } = await supabase.auth.getUser();
+      if (userErr) console.error('[useProfile] getUser error:', userErr.message);
+      uid = user?.id ?? null;
+      email = user?.email ?? null;
+    }
+    if (!uid) {
+      console.error('[useProfile] update: нет пользователя — сессия не восстановлена');
+      return null;
+    }
     // upsert по id: если строки нет — создаётся, иначе обновляется.
-    // onConflict делает поведение однозначным (UPDATE существующей строки).
     const { data, error } = await supabase
       .from('profiles')
       .upsert(
-        { id: user.id, email: user.email, ...patch },
+        { id: uid, email: email ?? undefined, ...patch },
         { onConflict: 'id', ignoreDuplicates: false }
       )
       .select()
