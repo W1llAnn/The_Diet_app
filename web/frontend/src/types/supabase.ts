@@ -31,13 +31,13 @@ export interface Database {
           email: string | null;
           full_name: string | null;
           is_admin: boolean | null;
-          // расширение из миграции 002:
-          sex: 'male' | 'female' | null;
+          // расширение из миграции 002 + 003:
+          sex: 'male' | 'female' | 'other' | null;
           age: number | null;
           height: number | null; // см
-          activity: string | null; // ключ из ACTIVITY_LEVELS
+          activity: string | null; // ключ из ACTIVITY_LEVELS (UI или калькулятора)
           goal: 'maintain' | 'lose' | 'gain' | null;
-          condition: string | null; // healthy/diabetes_t2/obesity/ckd/cvd
+          condition: string | null; // healthy/diabetes_t2/obesity/ckd/cvd/...
           life_stage: string | null;
           formula: 'who' | 'mifflin' | null;
           target_weight: number | null; // кг
@@ -45,6 +45,8 @@ export interface Database {
           allergies: string[] | null;
           units: 'metric' | 'imperial' | null;
           onboarding_completed: boolean | null;
+          goals: string[] | null; // из онбординга: lose/gain/maintain/build/...
+          habits: string[] | null; // из онбординга: water/breakfast/veggies/...
           created_at: string;
         };
         Insert: {

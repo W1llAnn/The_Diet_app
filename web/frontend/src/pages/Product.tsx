@@ -3,17 +3,32 @@ import { ArrowLeft, Plus, Star, Share2, AlertCircle, Check } from 'lucide-react'
 import type { Page } from '@/App';
 import AppShell from '@/components/layout/AppShell';
 import Vivi from '@/components/Vivi';
-import { sampleFoods } from '@/data/content';
+import { sampleFoods, type FoodItem } from '@/data/content';
+import { useDiary } from '@/lib/hooks';
 
 interface ProductProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
 }
 
+// Тип приёма пищи по умолчанию. В полной версии будет выбор при добавлении.
+type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
+
 export default function Product({ currentPage, onNavigate }: ProductProps) {
-  const food = sampleFoods[2]; // Grilled Salmon
+  // Продукт приходит из поиска через sessionStorage (мост без state-лифтинга).
+  // Если там пусто — fallback на sampleFoods[2] (для прямого захода на страницу).
+  const [food, setFood] = useState<FoodItem>(() => {
+    try {
+      const raw = sessionStorage.getItem('selectedFood');
+      if (raw) return JSON.parse(raw) as FoodItem;
+    } catch { /* ignore */ }
+    return sampleFoods[2];
+  });
   const [isFavorite, setIsFavorite] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [mealType, setMealType] = useState<MealType>('breakfast');
+  const [added, setAdded] = useState(false);
+  const { add } = useDiary();
 
   return (
     <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Карточка продукта" subtitle={food.name} showBack backPage="search">
@@ -84,8 +99,56 @@ export default function Product({ currentPage, onNavigate }: ProductProps) {
             <button onClick={() => setQuantity(quantity + 1)} className="w-9 h-9 rounded-xl bg-cream flex items-center justify-center text-text-primary hover:bg-primary-50 transition-all text-lg font-bold">+</button>
           </div>
         </div>
-        <button onClick={() => onNavigate('diary')} className="btn-primary w-full mt-4 flex items-center justify-center gap-2">
-          <Plus size={18} /> Добавить в дневник
+
+        {/* Выбор приёма пищи */}
+        <div className="flex gap-2 mt-4">
+          {([
+            { id: 'breakfast', label: '🌅 Завтрак' },
+            { id: 'lunch', label: '☀️ Обед' },
+            { id: 'dinner', label: '🌙 Ужин' },
+            { id: 'snack', label: '🍿 Перекус' },
+          ] as { id: MealType; label: string }[]).map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setMealType(m.id)}
+              className={`flex-1 px-2 py-2 rounded-xl text-xs font-medium transition-all ${
+                mealType === m.id ? 'bg-primary text-white' : 'bg-cream text-text-secondary hover:bg-primary-50'
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={async () => {
+            const result = await add({
+              food_id: food.id,
+              food_name: food.name,
+              emoji: food.emoji,
+              // макросы снимаются ПОРЦИИ (на одну порцию × количество)
+              calories: food.calories * quantity,
+              protein: food.protein * quantity,
+              carbs: food.carbs * quantity,
+              fat: food.fat * quantity,
+              fiber: 0,
+              quantity: quantity,
+              quantity_unit: 'порц.',
+              meal_type: mealType,
+            });
+            if (result) {
+              setAdded(true);
+              setTimeout(() => onNavigate('diary'), 600);
+            }
+          }}
+          disabled={added}
+          className="btn-primary w-full mt-4 flex items-center justify-center gap-2 disabled:opacity-70"
+        >
+          {added ? (
+            <><Check size={18} /> Добавлено!</>
+          ) : (
+            <><Plus size={18} /> Добавить в дневник</>
+          )}
         </button>
       </div>
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowRight, ArrowLeft, Check, Leaf } from 'lucide-react';
 import type { Page } from '@/App';
 import Vivi from '@/components/Vivi';
+import { supabase } from '@/lib/supabase';
 
 interface OnboardingProps {
   onNavigate: (page: Page) => void;
@@ -65,6 +66,8 @@ const steps = ['Welcome', 'Goals', 'About you', 'Body', 'Activity', 'Conditions'
 
 export default function Onboarding({ onNavigate }: OnboardingProps) {
   const [step, setStep] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState({
     goals: [] as string[],
     gender: '',
@@ -86,7 +89,58 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
     });
   };
 
-  const next = () => (step < steps.length - 1 ? setStep(step + 1) : onNavigate('dashboard'));
+  // Сохранение профиля в БД по завершении онбординга.
+  const saveProfile = async () => {
+    setSaving(true);
+    setError(null);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setError('Сессия истекла — войдите снова.');
+      setSaving(false);
+      return false;
+    }
+    // Главная цель → goal калькулятора (maintain/lose/gain).
+    const primaryGoal = data.goals.includes('lose') ? 'lose'
+      : data.goals.includes('gain') ? 'gain'
+      : 'maintain';
+    // Первое состояние → condition (если выбрано), иначе healthy.
+    const cond = data.conditions.length && data.conditions[0] !== 'none' ? data.conditions[0] : 'healthy';
+
+    const { error: upErr } = await supabase.from('profiles').update({
+      sex: (data.gender || null) as 'male' | 'female' | 'other' | null,
+      age: data.age,
+      height: data.height,
+      activity: data.activity || null,
+      goal: primaryGoal,
+      condition: cond,
+      goals: data.goals,
+      habits: data.habits,
+      dietary_prefs: data.diet !== 'none' ? [data.diet] : [],
+      allergies: data.allergies,
+      target_weight: data.targetWeight,
+      onboarding_completed: true,
+    }).eq('id', user.id);
+    setSaving(false);
+    if (upErr) {
+      setError(upErr.message);
+      return false;
+    }
+    // Записать стартовый вес в weight_log.
+    await supabase.from('weight_log').upsert(
+      { user_id: user.id, weight: data.weight, recorded_at: new Date().toISOString().slice(0, 10) },
+      { onConflict: 'user_id,recorded_at' }
+    );
+    return true;
+  };
+
+  const next = async () => {
+    if (step < steps.length - 1) {
+      setStep(step + 1);
+    } else {
+      const ok = await saveProfile();
+      if (ok) onNavigate('dashboard');
+    }
+  };
   const back = () => (step > 0 ? setStep(step - 1) : onNavigate('register'));
 
   const progress = ((step + 1) / steps.length) * 100;
@@ -357,14 +411,25 @@ export default function Onboarding({ onNavigate }: OnboardingProps) {
           )}
 
           {/* Navigation */}
-          <div className="flex items-center justify-between mt-6 sm:mt-8">
-            <button onClick={back} className="btn-ghost flex items-center gap-2">
-              <ArrowLeft size={18} /> Назад
-            </button>
-            <button onClick={next} className="btn-primary flex items-center gap-2">
-              {step === steps.length - 1 ? 'Войти в Vivora' : 'Продолжить'}
-              <ArrowRight size={18} />
-            </button>
+          <div className="mt-6 sm:mt-8">
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-3">
+                {error}
+              </div>
+            )}
+            <div className="flex items-center justify-between">
+              <button onClick={back} className="btn-ghost flex items-center gap-2">
+                <ArrowLeft size={18} /> Назад
+              </button>
+              <button
+                onClick={next}
+                disabled={saving}
+                className="btn-primary flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {saving ? 'Сохраняем…' : (step === steps.length - 1 ? 'Войти в Vivora' : 'Продолжить')}
+                <ArrowRight size={18} />
+              </button>
+            </div>
           </div>
         </div>
       </main>

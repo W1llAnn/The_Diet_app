@@ -1,8 +1,8 @@
-import { Plus, Droplets, Flame } from 'lucide-react';
+import { Plus, Droplets, Flame, Trash2 } from 'lucide-react';
 import type { Page } from '@/App';
 import AppShell from '@/components/layout/AppShell';
 import Vivi from '@/components/Vivi';
-import { sampleFoods } from '@/data/content';
+import { useDiary, useWater } from '@/lib/hooks';
 
 interface DiaryProps {
   currentPage: Page;
@@ -10,28 +10,25 @@ interface DiaryProps {
 }
 
 const mealSections = [
-  { id: 'breakfast', label: 'Завтрак', emoji: '🌅', goal: 500 },
-  { id: 'lunch', label: 'Обед', emoji: '☀️', goal: 650 },
-  { id: 'dinner', label: 'Ужин', emoji: '🌙', goal: 600 },
-  { id: 'snack', label: 'Перекус', emoji: '🍿', goal: 250 },
+  { id: 'breakfast' as const, label: 'Завтрак', emoji: '🌅', goal: 500 },
+  { id: 'lunch' as const, label: 'Обед', emoji: '☀️', goal: 650 },
+  { id: 'dinner' as const, label: 'Ужин', emoji: '🌙', goal: 600 },
+  { id: 'snack' as const, label: 'Перекус', emoji: '🍿', goal: 250 },
 ];
 
-export default function Diary({ currentPage, onNavigate }: DiaryProps) {
-  const logged: Record<string, { food: typeof sampleFoods[0]; quantity: number; time: string }[]> = {
-    breakfast: [{ food: sampleFoods[7], quantity: 1, time: '8:30' }, { food: sampleFoods[5], quantity: 1, time: '8:35' }],
-    lunch: [{ food: sampleFoods[3], quantity: 1, time: '12:45' }],
-    dinner: [],
-    snack: [{ food: sampleFoods[4], quantity: 1, time: '15:30' }],
-  };
+const WATER_GOAL = 8;
 
-  const totalEaten = Object.values(logged).flat().reduce((s, e) => s + e.food.calories * e.quantity, 0);
-  const totalGoal = 2000;
-  const protein = Object.values(logged).flat().reduce((s, e) => s + e.food.protein * e.quantity, 0);
-  const carbs = Object.values(logged).flat().reduce((s, e) => s + e.food.carbs * e.quantity, 0);
-  const fat = Object.values(logged).flat().reduce((s, e) => s + e.food.fat * e.quantity, 0);
+export default function Diary({ currentPage, onNavigate }: DiaryProps) {
+  const { entries, loading, remove } = useDiary();
+  const { glasses, addGlass } = useWater();
+
+  const totalEaten = entries.reduce((s, e) => s + Number(e.calories), 0);
+  const totalGoal = 2000; // TODO: считать из профиля (после портирования калькулятора КБЖУ)
+  const protein = entries.reduce((s, e) => s + Number(e.protein), 0);
+  const carbs = entries.reduce((s, e) => s + Number(e.carbs), 0);
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Дневник питания" subtitle="Сегодня, 26 июля" showSearch>
+    <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Дневник питания" subtitle="Сегодня" showSearch>
       {/* Summary card */}
       <div className="card mb-4 sm:mb-6">
         <div className="flex items-center justify-between mb-4">
@@ -40,11 +37,11 @@ export default function Diary({ currentPage, onNavigate }: DiaryProps) {
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <div className="text-center">
-            <p className="text-2xl font-bold text-primary">{totalEaten}</p>
+            <p className="text-2xl font-bold text-primary">{Math.round(totalEaten)}</p>
             <p className="text-xs text-text-secondary">Съедено калорий</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-text-secondary">{totalGoal - totalEaten}</p>
+            <p className="text-2xl font-bold text-text-secondary">{Math.max(0, Math.round(totalGoal - totalEaten))}</p>
             <p className="text-xs text-text-secondary">Осталось</p>
           </div>
           <div className="text-center">
@@ -57,15 +54,15 @@ export default function Diary({ currentPage, onNavigate }: DiaryProps) {
           </div>
         </div>
         <div className="h-2 bg-border rounded-full overflow-hidden mt-4">
-          <div className="h-full bg-gradient-primary rounded-full transition-all duration-1000" style={{ width: `${(totalEaten / totalGoal) * 100}%` }} />
+          <div className="h-full bg-gradient-primary rounded-full transition-all duration-1000" style={{ width: `${Math.min(100, (totalEaten / totalGoal) * 100)}%` }} />
         </div>
       </div>
 
       {/* Meal sections */}
       <div className="space-y-3 sm:space-y-4">
         {mealSections.map((section) => {
-          const entries = logged[section.id] || [];
-          const sectionCals = entries.reduce((s, e) => s + e.food.calories * e.quantity, 0);
+          const list = entries.filter((e) => e.meal_type === section.id);
+          const sectionCals = list.reduce((s, e) => s + Number(e.calories), 0);
           return (
             <div key={section.id} className="card">
               <div className="flex items-center justify-between mb-3">
@@ -73,10 +70,12 @@ export default function Diary({ currentPage, onNavigate }: DiaryProps) {
                   <span className="text-xl">{section.emoji}</span>
                   <h3 className="font-bold text-text-primary">{section.label}</h3>
                 </div>
-                <span className="text-sm text-text-secondary">{sectionCals} / {section.goal} ккал</span>
+                <span className="text-sm text-text-secondary">{Math.round(sectionCals)} / {section.goal} ккал</span>
               </div>
 
-              {entries.length === 0 ? (
+              {loading ? (
+                <p className="text-sm text-text-secondary py-3">Загрузка…</p>
+              ) : list.length === 0 ? (
                 <button
                   onClick={() => onNavigate('search')}
                   className="w-full p-4 border-2 border-dashed border-border rounded-xl text-text-secondary hover:border-primary hover:text-primary transition-all text-sm font-medium flex items-center justify-center gap-2"
@@ -85,17 +84,26 @@ export default function Diary({ currentPage, onNavigate }: DiaryProps) {
                 </button>
               ) : (
                 <div className="space-y-2">
-                  {entries.map((entry, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 bg-cream rounded-xl">
-                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-lg shadow-soft">{entry.food.emoji}</div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-text-primary">{entry.food.name}</p>
-                        <p className="text-xs text-text-secondary">{entry.food.serving} • {entry.time}</p>
+                  {list.map((entry) => (
+                    <div key={entry.id} className="flex items-center gap-3 p-3 bg-cream rounded-xl group">
+                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-lg shadow-soft">{entry.emoji || '🍽️'}</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-text-primary truncate">{entry.food_name}</p>
+                        <p className="text-xs text-text-secondary">
+                          {Number(entry.quantity)}{entry.quantity_unit} • {entry.protein}Б / {entry.carbs}У / {entry.fat}Ж
+                        </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-text-primary">{entry.food.calories}</p>
+                        <p className="text-sm font-bold text-text-primary">{Math.round(Number(entry.calories))}</p>
                         <p className="text-xs text-text-secondary">ккал</p>
                       </div>
+                      <button
+                        onClick={() => remove(entry.id)}
+                        className="text-text-secondary hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                        aria-label="Удалить запись"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   ))}
                   <button
@@ -118,15 +126,20 @@ export default function Diary({ currentPage, onNavigate }: DiaryProps) {
             <Droplets size={20} className="text-info" />
             <h3 className="font-bold text-text-primary">Вода</h3>
           </div>
-          <span className="text-sm text-text-secondary">6 / 8 стаканов</span>
+          <span className="text-sm text-text-secondary">{glasses} / {WATER_GOAL} стаканов</span>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          {[...Array(8)].map((_, i) => (
-            <button key={i} className={`w-10 h-12 rounded-lg border-2 flex items-end justify-center pb-1 transition-all ${i < 6 ? 'bg-info border-info' : 'bg-white border-border'}`}>
-              <Droplets size={14} className={i < 6 ? 'text-white' : 'text-border'} />
+          {[...Array(WATER_GOAL)].map((_, i) => (
+            <button
+              key={i}
+              onClick={addGlass}
+              className={`w-10 h-12 rounded-lg border-2 flex items-end justify-center pb-1 transition-all ${i < glasses ? 'bg-info border-info' : 'bg-white border-border hover:border-info'}`}
+            >
+              <Droplets size={14} className={i < glasses ? 'text-white' : 'text-border'} />
             </button>
           ))}
         </div>
+        <p className="text-xs text-text-secondary mt-2">Нажмите на стакан, чтобы добавить</p>
       </div>
 
       {/* Vivi tip */}

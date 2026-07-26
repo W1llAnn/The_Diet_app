@@ -3,27 +3,37 @@ import type { Page } from '@/App';
 import AppShell from '@/components/layout/AppShell';
 import ProgressRing from '@/components/ProgressRing';
 import Vivi from '@/components/Vivi';
+import { useDiary, useWater, useProfile, useWeight } from '@/lib/hooks';
 
 interface DashboardProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
 }
 
-const todayMeals = [
-  { type: 'Завтрак', emoji: '🥣', name: 'Овсянка с ягодами', time: '8:30', calories: 320 },
-  { type: 'Обед', emoji: '🥗', name: 'Чаша Будды с киноа', time: '12:45', calories: 480 },
-  { type: 'Перекус', emoji: '🍎', name: 'Яблоко и миндаль', time: '15:30', calories: 180 },
-];
-
-const weightData = [72, 71.5, 71.2, 70.8, 70.5, 70.3, 70];
+const MEAL_LABELS: Record<string, string> = {
+  breakfast: 'Завтрак', lunch: 'Обед', dinner: 'Ужин', snack: 'Перекус',
+};
+const EMOJI: Record<string, string> = {
+  breakfast: '🥣', lunch: '🥗', dinner: '🌙', snack: '🍎',
+};
 
 export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
-  const caloriesEaten = 980;
-  const caloriesGoal = 2000;
-  const protein = 82, proteinGoal = 120;
-  const carbs = 145, carbsGoal = 250;
-  const fat = 48, fatGoal = 65;
-  const water = 6, waterGoal = 8;
+  const { entries } = useDiary();
+  const { glasses } = useWater();
+  const { profile } = useProfile();
+  const { logs: weightLogs } = useWeight(90);
+
+  const caloriesEaten = Math.round(entries.reduce((s, e) => s + Number(e.calories), 0));
+  const caloriesGoal = 2000; // TODO: считать из профиля (после портирования калькулятора)
+  const protein = Math.round(entries.reduce((s, e) => s + Number(e.protein), 0));
+  const proteinGoal = 120;
+  const carbs = Math.round(entries.reduce((s, e) => s + Number(e.carbs), 0));
+  const carbsGoal = 250;
+  const fat = Math.round(entries.reduce((s, e) => s + Number(e.fat), 0));
+  const fatGoal = 65;
+  const water = glasses, waterGoal = 8;
+
+  const name = profile?.full_name?.split(' ')[0] || 'друг';
 
   return (
     <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Главная" subtitle="Сегодня, 26 июля" showSearch>
@@ -33,7 +43,10 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
         <Vivi size={56} mood="happy" className="flex-shrink-0 hidden sm:block" />
         <div className="flex-1 pt-0.5 sm:pt-1">
           <p className="text-sm text-text-primary leading-relaxed">
-            <span className="font-semibold">Доброе утро, Алекс!</span> Вы на 71% от цели по калориям — отличный темп. Попробуйте добавить горсть шпината к следующему приёму пищи для дополнительного железа. 🌿
+            <span className="font-semibold">Привет, {name}!</span>{' '}
+            {entries.length === 0
+              ? 'Добавьте первый приём пищи, чтобы начать день. Я рядом и готова помочь! 🌿'
+              : `Вы съели ${caloriesEaten} из ${caloriesGoal} ккал — отличный темп. Продолжайте в том же духе! 🌿`}
           </p>
         </div>
       </div>
@@ -120,22 +133,35 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
             <button onClick={() => onNavigate('diary')} className="text-sm text-primary font-medium hover:underline">Смотреть все</button>
           </div>
           <div className="space-y-3">
-            {todayMeals.map((m, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-cream rounded-xl">
-                <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center text-xl shadow-soft">{m.emoji}</div>
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-text-primary">{m.name}</p>
-                  <p className="text-xs text-text-secondary">{m.type} • {m.time}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-text-primary">{m.calories}</p>
-                  <p className="text-xs text-text-secondary">ккал</p>
-                </div>
+            {entries.length === 0 ? (
+              <div className="text-center py-6">
+                <p className="text-text-secondary text-sm mb-3">Пока ничего не записано</p>
+                <button onClick={() => onNavigate('search')} className="btn-primary text-sm">
+                  + Добавить первый приём пищи
+                </button>
               </div>
-            ))}
-            <button onClick={() => onNavigate('diary')} className="w-full p-3 border-2 border-dashed border-border rounded-xl text-text-secondary hover:border-primary hover:text-primary transition-all text-sm font-medium">
-              + Добавить приём пищи
-            </button>
+            ) : (
+              <>
+                {entries.slice(0, 4).map((m) => (
+                  <div key={m.id} className="flex items-center gap-3 p-3 bg-cream rounded-xl">
+                    <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center text-xl shadow-soft">{m.emoji || EMOJI[m.meal_type] || '🍽️'}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-text-primary truncate">{m.food_name}</p>
+                      <p className="text-xs text-text-secondary">
+                        {MEAL_LABELS[m.meal_type] || m.meal_type} • {Number(m.quantity)}{m.quantity_unit}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-text-primary">{Math.round(Number(m.calories))}</p>
+                      <p className="text-xs text-text-secondary">ккал</p>
+                    </div>
+                  </div>
+                ))}
+                <button onClick={() => onNavigate('diary')} className="w-full p-3 border-2 border-dashed border-border rounded-xl text-text-secondary hover:border-primary hover:text-primary transition-all text-sm font-medium">
+                  + Добавить приём пищи
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -145,19 +171,49 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
             <h3 className="font-bold text-text-primary">Динамика веса</h3>
             <TrendingUp size={18} className="text-primary" />
           </div>
-          <div className="text-center mb-4">
-            <p className="text-3xl font-bold text-text-primary">70.0 <span className="text-base text-text-secondary">кг</span></p>
-            <p className="text-sm text-primary font-medium mt-1">↓ 2.0 кг за 7 дней</p>
-          </div>
-          {/* Mini chart */}
-          <div className="flex items-end justify-between gap-1.5 h-24">
-            {weightData.map((w, i) => (
-              <div key={i} className="flex-1 bg-primary-200 rounded-t-md bar-animate" style={{ height: `${((w - 69) / (72.5 - 69)) * 100}%`, animationDelay: `${i * 60}ms` }} />
-            ))}
-          </div>
-          <div className="flex justify-between text-xs text-text-secondary mt-2">
-            <span>20 июля</span><span>Сегодня</span>
-          </div>
+          {(() => {
+            const recent = weightLogs.slice(-7);
+            const current = weightLogs.length ? Number(weightLogs[weightLogs.length - 1].weight) : null;
+            const first = weightLogs.length ? Number(weightLogs[0].weight) : null;
+            if (current === null) {
+              return (
+                <div className="text-center py-6">
+                  <p className="text-text-secondary text-sm mb-3">Нет записей веса</p>
+                  <button onClick={() => onNavigate('progress')} className="btn-secondary text-sm">Записать вес</button>
+                </div>
+              );
+            }
+            const delta = first !== null ? current - first : 0;
+            const vals = recent.map((w) => Number(w.weight));
+            const min = Math.min(...vals), max = Math.max(...vals);
+            const range = max - min || 1;
+            return (
+              <>
+                <div className="text-center mb-4">
+                  <p className="text-3xl font-bold text-text-primary">{current.toFixed(1)} <span className="text-base text-text-secondary">кг</span></p>
+                  {Math.abs(delta) >= 0.05 && (
+                    <p className={`text-sm font-medium mt-1 ${delta < 0 ? 'text-primary' : 'text-accent'}`}>
+                      {delta < 0 ? '↓' : '↑'} {Math.abs(delta).toFixed(1)} кг с первой записи
+                    </p>
+                  )}
+                </div>
+                {/* Mini chart */}
+                <div className="flex items-end justify-between gap-1.5 h-24">
+                  {recent.map((w, i) => {
+                    const val = Number(w.weight);
+                    return (
+                      <div key={w.id} className="flex-1 bg-primary-200 rounded-t-md bar-animate"
+                        style={{ height: `${((val - min) / range) * 100}%`, animationDelay: `${i * 60}ms` }} />
+                    );
+                  })}
+                </div>
+                <div className="flex justify-between text-xs text-text-secondary mt-2">
+                  <span>{recent[0]?.recorded_at?.slice(5) || ''}</span>
+                  <span>Сегодня</span>
+                </div>
+              </>
+            );
+          })()}
           <button onClick={() => onNavigate('progress')} className="btn-secondary w-full mt-4 text-sm py-2">Подробнее</button>
         </div>
       </div>

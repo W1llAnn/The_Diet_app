@@ -89,7 +89,11 @@ export default function SearchPage({ currentPage, onNavigate }: SearchPageProps)
           display.map((food) => (
             <button
               key={food.id}
-              onClick={() => onNavigate('product')}
+              onClick={() => {
+                // Мост в Product без state-лифтинга: кладём выбранный продукт.
+                sessionStorage.setItem('selectedFood', JSON.stringify(food));
+                onNavigate('product');
+              }}
               className="card-hover w-full text-left flex items-center gap-3"
             >
               <div className="w-12 h-12 bg-cream rounded-xl flex items-center justify-center text-2xl flex-shrink-0">{food.emoji}</div>
