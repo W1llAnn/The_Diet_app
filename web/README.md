@@ -27,11 +27,11 @@ web/frontend/
 ```bash
 cd web/frontend
 npm install        # один раз
-npm run dev        # http://localhost:5173/The_Diet_app/
+npm run dev        # http://localhost:5173/
 ```
 
-> `base` в `vite.config.ts` уже настроен под GitHub Pages (`/The_Diet_app/`),
-> поэтому локальный адрес тоже содержит этот префикс.
+> Vite поднимает dev-сервер в корне (`http://localhost:5173/`) — `base` в
+> `vite.config.ts` не задан, т.к. Vercel деплоит сайт в корень домена.
 
 ## Сборка
 
@@ -41,18 +41,33 @@ npm run build      # результат в web/frontend/dist/
 npm run preview    # локальный предпросмотр собранной версии
 ```
 
-## Публикация на GitHub Pages
+## Публикация на Vercel
 
-Настраивается один раз в репозитории:
+Vercel подключается к GitHub и автоматически деплоит при пуше. Репозиторий
+остаётся приватным, бесплатный тариф не требует карты.
 
-1. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
-2. При пуше в ветку `ui` (изменения в `web/frontend/`) срабатывает workflow
-   `.github/workflows/deploy-ui.yml`: ставит зависимости, собирает Vite и
-   деплоит `dist/` на Pages.
-3. Сайт: `https://w1llann.github.io/The_Diet_app/`
+### Одноразовая настройка (на сайте Vercel)
 
-Деплой можно запустить и вручную: **Actions → Deploy UI to GitHub Pages →
-Run workflow**.
+1. **vercel.com** → залогинься через GitHub (OAuth, даёт доступ к репо).
+2. **Add New → Project** → выбери репозиторий `W1llAnn/The_Diet_app`.
+3. В настройках проекта укажи:
+   - **Framework Preset:** `Vite`
+   - **Root Directory:** `web/frontend`
+   - Build / Install / Output Vercel определит сам (или возьмёт из `vercel.json`).
+4. **Deploy.** Первый билд идёт ~1 мин.
+
+После этого каждый пуш в любую ветку автоматически собирает превью-деплой
+(`<branch>.the-diet-app.vercel.app`), а мерж в `main` обновляет продакшен.
+
+### Зачем `vercel.json`
+
+`web/frontend/vercel.json` фиксирует build-команды и добавляет SPA-rewrite:
+все маршруты отдаются в `index.html`, чтобы внутренние страницы приложения
+работали при прямом переходе по ссылке.
+
+> Раньше проект был заточен под GitHub Pages (требует `base` в `vite.config.ts`
+> и публичного репо). Для приватного репо без оплаты GitHub Pages недоступен,
+> поэтому перешли на Vercel — `base` убран, сайт живёт в корне домена.
 
 ## Зависимости
 
