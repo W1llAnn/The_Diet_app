@@ -124,11 +124,15 @@ export function useProfile() {
       console.error('[useProfile] update: нет пользователя — сессия не восстановлена');
       return null;
     }
+    // Никогда не позволяем клиенту менять is_admin — это правится только в БД.
+    // Бережёмся от триггеров и случайных правок прав через форму.
+    const safePatch = { ...patch };
+    delete (safePatch as Record<string, unknown>).is_admin;
     // upsert по id: если строки нет — создаётся, иначе обновляется.
     const { data, error } = await supabase
       .from('profiles')
       .upsert(
-        { id: uid, email: email ?? undefined, ...patch },
+        { id: uid, email: email ?? undefined, ...safePatch },
         { onConflict: 'id', ignoreDuplicates: false }
       )
       .select()
