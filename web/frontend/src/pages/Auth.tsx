@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Leaf, Mail, Lock, Eye, EyeOff, ArrowRight, Apple, Chrome } from 'lucide-react';
+import { Leaf, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import type { Page } from '@/App';
 import Vivi from '@/components/Vivi';
 
@@ -47,24 +47,6 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
               <h1 className="text-3xl font-bold text-text-primary tracking-tight">{titles[mode].title}</h1>
               <p className="text-text-secondary mt-2">{titles[mode].subtitle}</p>
             </div>
-
-            {mode !== 'forgot' && (
-              <>
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                  <button onClick={() => onNavigate('onboarding')} className="flex items-center justify-center gap-2 bg-white border border-border rounded-xl py-3 text-sm font-medium text-text-primary hover:bg-primary-50 transition-all active:scale-95">
-                    <Apple size={18} /> Apple
-                  </button>
-                  <button onClick={() => onNavigate('onboarding')} className="flex items-center justify-center gap-2 bg-white border border-border rounded-xl py-3 text-sm font-medium text-text-primary hover:bg-primary-50 transition-all active:scale-95">
-                    <Chrome size={18} /> Google
-                  </button>
-                </div>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex-1 h-px bg-border" />
-                  <span className="text-xs text-text-secondary">or continue with email</span>
-                  <div className="flex-1 h-px bg-border" />
-                </div>
-              </>
-            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === 'register' && (
