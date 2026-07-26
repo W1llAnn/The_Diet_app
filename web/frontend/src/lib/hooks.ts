@@ -125,24 +125,22 @@ export function useProfile() {
       return null;
     }
     // Никогда не позволяем клиенту менять is_admin — это правится только в БД.
-    // Бережёмся от триггеров и случайных правок прав через форму.
     const safePatch = { ...patch };
     delete (safePatch as Record<string, unknown>).is_admin;
-    // upsert по id: если строки нет — создаётся, иначе обновляется.
+    // Простой UPDATE: строка профиля точно существует (она подгрузилась в форму).
+    // upsert здесь не нужен и привносил побочные эффекты с триггерами.
     const { data, error } = await supabase
       .from('profiles')
-      .upsert(
-        { id: uid, email: email ?? undefined, ...safePatch },
-        { onConflict: 'id', ignoreDuplicates: false }
-      )
+      .update(safePatch)
+      .eq('id', uid)
       .select()
       .maybeSingle();
     if (error) {
-      console.error('[useProfile] update error:', error.code, error.message, error.details, patch);
+      console.error('[useProfile] update error:', error.code, error.message, error.details, safePatch);
       return null;
     }
     if (!data) {
-      console.error('[useProfile] update вернул пусто — вероятно RLS блокирует чтение после записи');
+      console.error('[useProfile] update вернул пусто — RLS блокирует чтение/запись. uid=', uid);
     }
     setProfile(data);
     return data;
