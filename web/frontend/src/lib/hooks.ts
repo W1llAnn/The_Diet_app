@@ -284,10 +284,21 @@ export function useTargets() {
   const { logs: weightLogs } = useWeight(90);
 
   // Последний вес: weight_log отсортирован по возрастанию, последний = текущий.
-  const currentWeight = weightLogs.length ? Number(weightLogs[weightLogs.length - 1].weight) : null;
+  // Если записей нет — fallback на target_weight из профиля (лучше чем ничего).
+  const currentWeight = weightLogs.length
+    ? Number(weightLogs[weightLogs.length - 1].weight)
+    : (profile?.target_weight ?? null);
 
+  // Диагностика: что именно не хватает для расчёта.
   if (!profile || !profile.sex || !profile.height || currentWeight === null || !profile.age) {
-    // Профиль неполон — дефолты (как было в моках).
+    const missing = [
+      !profile && 'профиль',
+      profile && !profile.sex && 'пол',
+      profile && !profile.age && 'возраст',
+      profile && !profile.height && 'рост',
+      currentWeight === null && 'вес (нет записей в weight_log и target_weight)',
+    ].filter(Boolean);
+    console.info('[useTargets] расчёт невозможен, не хватает:', missing.join(', '));
     return {
       targets: {
         target_kcal: 2000, protein_g: 120, fat_g: 65, carbs_g: 250, fiber_g: 25,
@@ -308,6 +319,13 @@ export function useTargets() {
     condition: profile.condition,
     life_stage: profile.life_stage,
     formula: profile.formula ?? 'who',
+  });
+
+  console.info('[useTargets] расчёт:', {
+    sex: profile.sex, age: profile.age, weight: currentWeight, height: profile.height,
+    activity: profile.activity, goal: profile.goal, condition: profile.condition,
+    '→ target_kcal': Math.round(targets.target_kcal),
+    '→ Б/Ж/У/клетч': `${Math.round(targets.protein_g)}/${Math.round(targets.fat_g)}/${Math.round(targets.carbs_g)}/${Math.round(targets.fiber_g)}`,
   });
 
   return { targets, ready: true, currentWeight };
