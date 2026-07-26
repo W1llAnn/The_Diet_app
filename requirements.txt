@@ -5,3 +5,4 @@ pandas==3.0.3
 numpy==2.4.6
 requests==2.34.2
 tqdm==4.68.4
+mcp==1.28.1  # для MCP-сервера (mcp_server.py), FastMCP SDK
