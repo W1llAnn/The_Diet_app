@@ -49,19 +49,25 @@ export function useUserId() {
 // ============================================================ useProfile
 // Читает и обновляет профиль текущего пользователя.
 //
-// Подписывается на onAuthStateChange: сессия восстанавливается из localStorage
-// асинхронно, поэтому на момент первого рендера её может ещё не быть.
-// Подписка гарантирует, что профиль загрузится, как только сессия появится.
+// Сессия восстанавливается из localStorage асинхронно, поэтому на момент
+// первого рендера её может не быть. Используем три источника uid подряд:
+//   1) getSession()        — из localStorage, мгновенно, но может быть пусто;
+//   2) getUser()           — стучится на сервер, возвращает актуального юзера
+//                            даже если локальная сессия не подхватилась
+//                            (надёжный fallback для Firefox/строгих настроек);
+//   3) onAuthStateChange   — подписка, ловит вход/выход/восстановление.
 export function useProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
+    let loaded = false; // не сбрасываем в null при uid=null — только когда точно знаем, что юзера нет
 
     const fetchProfile = async (uid: string | null) => {
       if (!uid) {
-        if (active) { setProfile(null); setLoading(false); }
+        // Только если точно знаем, что юзера нет — показываем пустой профиль.
+        if (loaded && active) setProfile(null);
         return;
       }
       const { data, error } = await supabase
@@ -72,16 +78,22 @@ export function useProfile() {
       if (error) {
         console.error('[useProfile] select:', error.message);
       }
+      loaded = true;
       if (active) { setProfile(data); setLoading(false); }
     };
 
-    // Сразу пробуем сессию из localStorage (быстро, без сети).
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!active) return;
-      fetchProfile(session?.user?.id ?? null);
-    });
+    const resolveUid = async (): Promise<string | null> => {
+      // 1) локальная сессия (мгновенно)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) return session.user.id;
+      // 2) fallback: спросить сервер (надёжно, если локально пусто)
+      const { data: { user } } = await supabase.auth.getUser();
+      return user?.id ?? null;
+    };
 
-    // И подписываемся: сработает и при восстановлении сессии, и при входе/выходе.
+    resolveUid().then((uid) => { if (active) fetchProfile(uid); });
+
+    // 3) подписка на вход/выход — обновит профиль при изменениях.
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!active) return;
       fetchProfile(session?.user?.id ?? null);
@@ -96,10 +108,11 @@ export function useProfile() {
   const update = useCallback(async (patch: Partial<Profile>) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
+    // upsert вместо update: если строки профиля ещё нет (например, юзер заведён
+    // до триггера авто-создания) — она создаётся, иначе обновляется.
     const { data, error } = await supabase
       .from('profiles')
-      .update(patch)
-      .eq('id', user.id)
+      .upsert({ id: user.id, email: user.email, ...patch })
       .select()
       .maybeSingle();
     if (error) { console.error('[useProfile] update:', error.message); return null; }

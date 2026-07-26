@@ -156,10 +156,9 @@ export default function Profile({ currentPage, onNavigate }: ProfileProps) {
           <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Профиль здоровья</p>
         </div>
 
-        {!profile ? (
-          <p className="text-sm text-text-secondary px-3 py-4">Загрузка профиля…</p>
-        ) : (
-          <div className="px-3 py-2 space-y-4">
+        {/* Форма показывается ВСЕГДА — с дефолтами, если профиль ещё не загружен.
+            Так пользователь может заполнить и сохранить даже при проблемах с загрузкой. */}
+        <div className="px-3 py-2 space-y-4">
             {/* Пол */}
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1.5">Пол</label>
@@ -256,7 +255,6 @@ export default function Profile({ currentPage, onNavigate }: ProfileProps) {
               <p className="text-xs text-text-secondary text-center">Измените параметры, чтобы сохранить</p>
             )}
           </div>
-        )}
       </div>
 
       {/* Vivi message */}
