@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Leaf, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import type { Page } from '@/App';
 import Vivi from '@/components/Vivi';
+import { supabase } from '@/lib/supabase';
 
 interface AuthProps {
   mode: 'login' | 'register' | 'forgot';
@@ -13,6 +14,8 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const titles = {
     login: { title: 'Welcome back', subtitle: 'Let\'s continue your journey together.' },
@@ -20,14 +23,57 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
     forgot: { title: 'Reset your password', subtitle: 'We\'ll send you a link to get back in.' },
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     if (mode === 'forgot') {
+      // Отправляем письмо для сброса пароля через Supabase.
+      setLoading(true);
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email);
+      setLoading(false);
+      if (resetError) {
+        setError(resetError.message);
+        return;
+      }
       alert('Password reset link sent! Check your email.');
       onNavigate('login');
       return;
     }
-    onNavigate(mode === 'register' ? 'onboarding' : 'dashboard');
+
+    setLoading(true);
+    if (mode === 'register') {
+      // Регистрация: Supabase создаёт пользователя, сессия возвращается сразу.
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: name } },
+      });
+      setLoading(false);
+      if (signUpError) {
+        setError(signUpError.message);
+        return;
+      }
+      // Если требуется подтверждение email — сессии не будет.
+      if (!data.session) {
+        setError('Check your email to confirm the account, then log in.');
+        onNavigate('login');
+        return;
+      }
+      onNavigate('onboarding');
+    } else {
+      // Вход: проверка пароля в Supabase.
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      setLoading(false);
+      if (signInError) {
+        setError(signInError.message);
+        return;
+      }
+      onNavigate('dashboard');
+    }
   };
 
   return (
@@ -101,11 +147,25 @@ export default function Auth({ mode, onNavigate }: AuthProps) {
                 </div>
               )}
 
-              <button type="submit" className="btn-primary w-full flex items-center justify-center gap-2 mt-2">
-                {mode === 'login' && 'Log in'}
-                {mode === 'register' && 'Create account'}
-                {mode === 'forgot' && 'Send reset link'}
-                <ArrowRight size={18} />
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full flex items-center justify-center gap-2 mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Please wait…' : (
+                  <>
+                    {mode === 'login' && 'Log in'}
+                    {mode === 'register' && 'Create account'}
+                    {mode === 'forgot' && 'Send reset link'}
+                    <ArrowRight size={18} />
+                  </>
+                )}
               </button>
             </form>
 

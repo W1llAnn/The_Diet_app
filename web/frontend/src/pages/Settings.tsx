@@ -1,18 +1,27 @@
 import { useState } from 'react';
-import { ChevronRight, Bell, Globe, Moon, Lock, User, Database as DataIcon, HelpCircle, type LucideIcon } from 'lucide-react';
+import { ChevronRight, Bell, Globe, Moon, Lock, User, Database as DataIcon, HelpCircle, Shield, LogOut, type LucideIcon } from 'lucide-react';
 import type { Page } from '@/App';
 import AppShell from '@/components/layout/AppShell';
+import { supabase } from '@/lib/supabase';
+import type { User as AuthUser } from '@supabase/supabase-js';
 
 interface SettingsProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
+  user?: AuthUser | null;
+  isAdmin?: boolean;
 }
 
-export default function Settings({ currentPage, onNavigate }: SettingsProps) {
+export default function Settings({ currentPage, onNavigate, user, isAdmin }: SettingsProps) {
   const [notifications, setNotifications] = useState({ meal: true, water: true, achievements: true, weekly: false, ai: true });
   const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
   const [darkMode, setDarkMode] = useState(false);
   const [privacy, setPrivacy] = useState({ analytics: false, shareData: false });
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    onNavigate('landing');
+  };
 
   const Toggle = ({ on, onClick }: { on: boolean; onClick: () => void }) => (
     <button onClick={onClick} className={`w-11 h-6 rounded-full transition-all relative ${on ? 'bg-primary' : 'bg-border'}`}>
@@ -22,6 +31,25 @@ export default function Settings({ currentPage, onNavigate }: SettingsProps) {
 
   return (
     <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Settings" subtitle="Make Vivora yours">
+      {/* Текущий пользователь */}
+      {user && (
+        <div className="card p-4 mb-4 sm:mb-5 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+            <User size={18} className="text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-text-primary truncate">{user.email}</p>
+            {isAdmin ? (
+              <span className="inline-flex items-center gap-1 mt-0.5 text-xs font-medium text-primary">
+                <Shield size={12} /> Administrator
+              </span>
+            ) : (
+              <p className="text-xs text-text-secondary">Standard account</p>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Account */}
       <div className="card p-2 mb-4 sm:mb-5">
         <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider px-3 py-2">Account</p>
@@ -101,6 +129,15 @@ export default function Settings({ currentPage, onNavigate }: SettingsProps) {
           </button>
         ))}
       </div>
+
+      {user && (
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 px-3 py-3 rounded-xl border border-border text-sm font-medium text-text-secondary hover:bg-cream hover:text-text-primary transition-all mb-4"
+        >
+          <LogOut size={16} /> Log out
+        </button>
+      )}
 
       <p className="text-center text-xs text-text-secondary">Vivora v1.0.0</p>
     </AppShell>

@@ -36,6 +36,10 @@ backups/
 *.sqlite
 *.sqlite3
 
+# Исключения: миграции и схемы БД — это исходный код, они должны быть в git.
+!supabase/**/*.sql
+!db/**/*.sql
+
 # Local tooling
 .DS_Store
 Thumbs.db
