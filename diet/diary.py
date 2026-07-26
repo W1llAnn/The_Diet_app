@@ -13,8 +13,8 @@ import pandas as pd
 
 from .food_db import FoodItem, NUTRIENT_COLS, load_foods, search
 
-# Колонки, которые сравниваем с нормой (КБЖУ — то, что считает калькулятор).
-COMPARE_COLS = ["kcal", "protein_g", "fat_g", "carbs_g"]
+# Колонки, которые сравниваем с нормой (КБЖУ + клетчатка — то, что считает калькулятор).
+COMPARE_COLS = ["kcal", "protein_g", "fat_g", "carbs_g", "fiber_g"]
 
 # Человекочитаемые названия для вывода.
 COL_LABELS = {
@@ -75,7 +75,7 @@ class FoodLog:
         return totals
 
     def to_df(self) -> pd.DataFrame:
-        """Таблица съеденного: название, источник, граммы, КБЖУ порции."""
+        """Таблица съеденного: название, источник, граммы, КБЖУ + клетчатка порции."""
         rows = []
         for e in self._entries:
             rows.append({
@@ -86,6 +86,7 @@ class FoodLog:
                 "Б (г)": e.portion_values.get("protein_g"),
                 "Ж (г)": e.portion_values.get("fat_g"),
                 "У (г)": e.portion_values.get("carbs_g"),
+                "Клетчатка (г)": e.portion_values.get("fiber_g"),
             })
         return pd.DataFrame(rows)
 
@@ -95,12 +96,14 @@ class FoodLog:
         Возвращает таблицу: нутриент / факт / цель / остаток / % выполнения.
         """
         totals = self.totals
-        # Цели по КБЖУ берём из NutritionResult (целевые ккал и Б/Ж/У в граммах).
+        # Цели по КБЖУ + клетчатке берём из NutritionResult
+        # (целевые ккал, Б/Ж/У и рекомендуемая клетчатка в граммах).
         targets = {
             "kcal": target_result.target_kcal,
             "protein_g": target_result.protein_g,
             "fat_g": target_result.fat_g,
             "carbs_g": target_result.carbs_g,
+            "fiber_g": target_result.fiber_g,
         }
         rows = []
         for c in COMPARE_COLS:

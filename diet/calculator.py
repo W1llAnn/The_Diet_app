@@ -15,6 +15,7 @@
         → целевые ккал (TDEE + поправка на цель + прибавка стадии жизни,
                          не ниже минимума)
         → БЖУ (с приоритетом CKD по белку — см. _calc_protein)
+        → клетчатка (от целевых ккал по норме группы, не ниже DRI-минимума)
 """
 
 from __future__ import annotations
@@ -49,6 +50,11 @@ KCAL_PER_GRAM = {"protein": 4.0, "fat": 9.0, "carbs": 4.0}
 
 # Жиры как доля энергии во всех группах (≤30%, ВОЗ/AHA).
 FAT_SHARE = 0.30
+
+# Абсолютный минимум клетчатки для взрослых (г/день) — нижняя граница DRI
+# (Institute of Medicine). Даже при низкой калорийности норма не опускается
+# ниже этого порога.
+MIN_FIBER_G = 25.0
 
 
 # --- Уравнения Скофилда (ФАО/ВОЗ/ООН, 1985), ккал; W=кг, H=метры ----------------
@@ -99,6 +105,7 @@ class NutritionResult:
     protein_g: float = 0.0
     fat_g: float = 0.0
     carbs_g: float = 0.0
+    fiber_g: float = 0.0  # рекомендуемая клетчатка (г/день); не входит в калории
 
     @property
     def protein_kcal(self) -> float:
@@ -128,6 +135,7 @@ class NutritionResult:
             "Белки, г": round(self.protein_g),
             "Жиры, г": round(self.fat_g),
             "Углеводы, г": round(self.carbs_g),
+            "Клетчатка, г": round(self.fiber_g),
         }
 
     def comparison(self) -> dict:
@@ -253,12 +261,14 @@ def _build_warnings(profile: UserProfile, condition_key: str, life_stage_key: st
 
 
 def calc_macros(profile: UserProfile, target_kcal: float, condition_key: str,
-                life_stage_key: str) -> tuple[float, float, float, str | None]:
-    """Распределение БЖУ в граммах.
+                life_stage_key: str) -> tuple[float, float, float, float, str | None]:
+    """Распределение БЖУ и клетчатки в граммах.
 
     Белок — по приоритету (см. _calc_protein).
     Жиры — FAT_SHARE от энергии. Углеводы — остаток.
-    Возвращает (белок, жиры, углеводы, protein_warning).
+    Клетчатка — по норме группы (fiber_per_kcal от калорий), но не ниже
+    абсолютного минимума DRI (MIN_FIBER_G). Клетчатка не входит в калории.
+    Возвращает (белок, жиры, углеводы, клетчатка, protein_warning).
     """
     protein_g, protein_warning = _calc_protein(
         profile, condition_key, life_stage_key, target_kcal
@@ -271,7 +281,10 @@ def calc_macros(profile: UserProfile, target_kcal: float, condition_key: str,
     carbs_kcal = target_kcal - protein_kcal - fat_kcal
     carbs_g = carbs_kcal / KCAL_PER_GRAM["carbs"]
 
-    return protein_g, fat_g, carbs_g, protein_warning
+    cond_cfg = get_condition(condition_key)
+    fiber_g = max(target_kcal * cond_cfg["fiber_per_kcal"], MIN_FIBER_G)
+
+    return protein_g, fat_g, carbs_g, fiber_g, protein_warning
 
 
 def _join_notes(cond_cfg: dict, stage_cfg: dict) -> str | None:
@@ -312,7 +325,7 @@ def calculate(profile: UserProfile, formula: str = "who",
 
     kcal_add = stage_cfg.get("kcal_add", 0)
     target_kcal = calc_target_kcal(tdee, profile, kcal_add=kcal_add)
-    protein_g, fat_g, carbs_g, protein_warning = calc_macros(
+    protein_g, fat_g, carbs_g, fiber_g, protein_warning = calc_macros(
         profile, target_kcal, condition, life_stage
     )
 
@@ -340,4 +353,5 @@ def calculate(profile: UserProfile, formula: str = "who",
         protein_g=protein_g,
         fat_g=fat_g,
         carbs_g=carbs_g,
+        fiber_g=fiber_g,
     )
