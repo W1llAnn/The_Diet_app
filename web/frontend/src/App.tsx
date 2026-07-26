@@ -45,19 +45,37 @@ function App() {
     let active = true;
 
     // Восстановление текущей сессии из localStorage.
-    supabase.auth.getSession().then(async ({ data }) => {
-      if (!active) return;
-      const u = data.session?.user ?? null;
-      setUser(u);
-      if (u) setIsAdmin(await fetchIsAdmin());
-      setAuthReady(true);
-    });
+    // catch обязателен: если промис отвергнётся, без него authReady навсегда
+    // останется false и приложение уйдёт в вечный белый экран.
+    supabase.auth
+      .getSession()
+      .then(async ({ data }) => {
+        if (!active) return;
+        const u = data.session?.user ?? null;
+        setUser(u);
+        if (u) {
+          try {
+            setIsAdmin(await fetchIsAdmin());
+          } catch (e) {
+            console.error('[auth] fetchIsAdmin упал:', e);
+          }
+        }
+        setAuthReady(true);
+      })
+      .catch((e) => {
+        console.error('[auth] getSession упал:', e);
+        if (active) setAuthReady(true); // всё равно показываем UI
+      });
 
     // Реакция на вход/выход (например, из формы Auth).
     const { data: sub } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const u = session?.user ?? null;
       setUser(u);
-      setIsAdmin(u ? await fetchIsAdmin() : false);
+      try {
+        setIsAdmin(u ? await fetchIsAdmin() : false);
+      } catch (e) {
+        console.error('[auth] fetchIsAdmin в onAuthStateChange упал:', e);
+      }
       // После входа кидаем на дашборд.
       if (u && (page === 'login' || page === 'register')) navigate('dashboard');
     });
