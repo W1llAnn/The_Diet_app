@@ -16,25 +16,81 @@ function todayStr(): string {
   return `${y}-${m}-${day}`;
 }
 
+// ============================================================ useUserId
+// Даёт uid текущего пользователя, реагируя на появление/исчезновение сессии.
+//
+// Сессия восстанавливается из localStorage асинхронно: на момент первого
+// рендера её может ещё не быть, и supabase.auth.getUser() вернёт null.
+// Без подписки хуки данных поймали бы этот момент и остались пустыми навсегда.
+// Поэтому: пробуем getSession + подписываемся на onAuthStateChange.
+export function useUserId() {
+  const [uid, setUid] = useState<string | null | undefined>(undefined); // undefined = ещё не знаем
+
+  useEffect(() => {
+    let active = true;
+    const apply = (sessionUid: string | null) => {
+      if (active) setUid(sessionUid);
+    };
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      apply(session?.user?.id ?? null);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      apply(session?.user?.id ?? null);
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  return uid; // undefined = загрузка, null = не залогинен, string = id
+}
+
 // ============================================================ useProfile
 // Читает и обновляет профиль текущего пользователя.
+//
+// Подписывается на onAuthStateChange: сессия восстанавливается из localStorage
+// асинхронно, поэтому на момент первого рендера её может ещё не быть.
+// Подписка гарантирует, что профиль загрузится, как только сессия появится.
 export function useProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
-    (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setLoading(false); return; }
-      const { data } = await supabase
+
+    const fetchProfile = async (uid: string | null) => {
+      if (!uid) {
+        if (active) { setProfile(null); setLoading(false); }
+        return;
+      }
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
+        .eq('id', uid)
         .maybeSingle();
+      if (error) {
+        console.error('[useProfile] select:', error.message);
+      }
       if (active) { setProfile(data); setLoading(false); }
-    })();
-    return () => { active = false; };
+    };
+
+    // Сразу пробуем сессию из localStorage (быстро, без сети).
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!active) return;
+      fetchProfile(session?.user?.id ?? null);
+    });
+
+    // И подписываемся: сработает и при восстановлении сессии, и при входе/выходе.
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!active) return;
+      fetchProfile(session?.user?.id ?? null);
+    });
+
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const update = useCallback(async (patch: Partial<Profile>) => {
@@ -57,6 +113,7 @@ export function useProfile() {
 // ============================================================ useDiary
 // Записи дневника на указанную дату (по умолчанию сегодня).
 export function useDiary(date: string = todayStr()) {
+  const uid = useUserId();
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -76,7 +133,7 @@ export function useDiary(date: string = todayStr()) {
     return list;
   }, [date]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { if (uid !== undefined) load(); }, [load, uid]);
 
   const add = useCallback(async (entry: Database['public']['Tables']['diary_entries']['Insert']) => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -104,6 +161,7 @@ export function useDiary(date: string = todayStr()) {
 // ============================================================ useWater
 // Стаканы воды на сегодня.
 export function useWater(date: string = todayStr()) {
+  const uid = useUserId();
   const [glasses, setGlasses] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -120,7 +178,7 @@ export function useWater(date: string = todayStr()) {
     setLoading(false);
   }, [date]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { if (uid !== undefined) load(); }, [load, uid]);
 
   // +1 стакан (upsert: создаёт запись или инкрементит существующую).
   const addGlass = useCallback(async () => {
@@ -155,6 +213,7 @@ export function useWater(date: string = todayStr()) {
 // ============================================================ useWeight
 // История веса (по умолчанию последние 90 дней).
 export function useWeight(days: number = 90) {
+  const uid = useUserId();
   const [logs, setLogs] = useState<WeightLog[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -175,7 +234,7 @@ export function useWeight(days: number = 90) {
     setLoading(false);
   }, [days]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { if (uid !== undefined) load(); }, [load, uid]);
 
   const log = useCallback(async (weight: number) => {
     const { data: { user } } = await supabase.auth.getUser();
