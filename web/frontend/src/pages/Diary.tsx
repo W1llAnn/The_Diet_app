@@ -2,7 +2,7 @@ import { Plus, Droplets, Flame, Trash2 } from 'lucide-react';
 import type { Page } from '@/App';
 import AppShell from '@/components/layout/AppShell';
 import Vivi from '@/components/Vivi';
-import { useDiary, useWater } from '@/lib/hooks';
+import { useDiary, useWater, useTargets } from '@/lib/hooks';
 
 interface DiaryProps {
   currentPage: Page;
@@ -21,11 +21,18 @@ const WATER_GOAL = 8;
 export default function Diary({ currentPage, onNavigate }: DiaryProps) {
   const { entries, loading, remove } = useDiary();
   const { glasses, addGlass } = useWater();
+  const { targets } = useTargets();
 
   const totalEaten = entries.reduce((s, e) => s + Number(e.calories), 0);
-  const totalGoal = 2000; // TODO: считать из профиля (после портирования калькулятора КБЖУ)
+  const totalGoal = Math.round(targets.target_kcal);
   const protein = entries.reduce((s, e) => s + Number(e.protein), 0);
+  const proteinGoal = Math.round(targets.protein_g);
   const carbs = entries.reduce((s, e) => s + Number(e.carbs), 0);
+  const carbsGoal = Math.round(targets.carbs_g);
+  const fat = entries.reduce((s, e) => s + Number(e.fat), 0);
+  const fatGoal = Math.round(targets.fat_g);
+  const fiber = entries.reduce((s, e) => s + Number(e.fiber ?? 0), 0);
+  const fiberGoal = Math.round(targets.fiber_g);
 
   return (
     <AppShell currentPage={currentPage} onNavigate={onNavigate} title="Дневник питания" subtitle="Сегодня" showSearch>
@@ -35,22 +42,30 @@ export default function Diary({ currentPage, onNavigate }: DiaryProps) {
           <h3 className="font-bold text-text-primary">Итоги за сегодня</h3>
           <Flame size={18} className="text-accent" />
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
           <div className="text-center">
-            <p className="text-2xl font-bold text-primary">{Math.round(totalEaten)}</p>
-            <p className="text-xs text-text-secondary">Съедено калорий</p>
+            <p className="text-xl sm:text-2xl font-bold text-primary">{Math.round(totalEaten)}</p>
+            <p className="text-xs text-text-secondary">Калории</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-text-secondary">{Math.max(0, Math.round(totalGoal - totalEaten))}</p>
+            <p className="text-xl sm:text-2xl font-bold text-text-secondary">{Math.max(0, Math.round(totalGoal - totalEaten))}</p>
             <p className="text-xs text-text-secondary">Осталось</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-primary">{Math.round(protein)}г</p>
+            <p className="text-xl sm:text-2xl font-bold text-primary">{Math.round(protein)}<span className="text-xs text-text-secondary">/{proteinGoal}г</span></p>
             <p className="text-xs text-text-secondary">Белки</p>
           </div>
           <div className="text-center">
-            <p className="text-2xl font-bold text-info">{Math.round(carbs)}г</p>
+            <p className="text-xl sm:text-2xl font-bold text-accent">{Math.round(fat)}<span className="text-xs text-text-secondary">/{fatGoal}г</span></p>
+            <p className="text-xs text-text-secondary">Жиры</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xl sm:text-2xl font-bold text-info">{Math.round(carbs)}<span className="text-xs text-text-secondary">/{carbsGoal}г</span></p>
             <p className="text-xs text-text-secondary">Углеводы</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xl sm:text-2xl font-bold" style={{ color: '#A78BFA' }}>{Math.round(fiber)}<span className="text-xs text-text-secondary">/{fiberGoal}г</span></p>
+            <p className="text-xs text-text-secondary">Клетчатка</p>
           </div>
         </div>
         <div className="h-2 bg-border rounded-full overflow-hidden mt-4">

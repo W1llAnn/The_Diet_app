@@ -3,7 +3,7 @@ import type { Page } from '@/App';
 import AppShell from '@/components/layout/AppShell';
 import ProgressRing from '@/components/ProgressRing';
 import Vivi from '@/components/Vivi';
-import { useDiary, useWater, useProfile, useWeight } from '@/lib/hooks';
+import { useDiary, useWater, useProfile, useWeight, useTargets } from '@/lib/hooks';
 
 interface DashboardProps {
   currentPage: Page;
@@ -22,15 +22,18 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
   const { glasses } = useWater();
   const { profile } = useProfile();
   const { logs: weightLogs } = useWeight(90);
+  const { targets } = useTargets();
 
   const caloriesEaten = Math.round(entries.reduce((s, e) => s + Number(e.calories), 0));
-  const caloriesGoal = 2000; // TODO: считать из профиля (после портирования калькулятора)
+  const caloriesGoal = Math.round(targets.target_kcal);
   const protein = Math.round(entries.reduce((s, e) => s + Number(e.protein), 0));
-  const proteinGoal = 120;
+  const proteinGoal = Math.round(targets.protein_g);
   const carbs = Math.round(entries.reduce((s, e) => s + Number(e.carbs), 0));
-  const carbsGoal = 250;
+  const carbsGoal = Math.round(targets.carbs_g);
   const fat = Math.round(entries.reduce((s, e) => s + Number(e.fat), 0));
-  const fatGoal = 65;
+  const fatGoal = Math.round(targets.fat_g);
+  const fiber = Math.round(entries.reduce((s, e) => s + Number(e.fiber ?? 0), 0));
+  const fiberGoal = Math.round(targets.fiber_g);
   const water = glasses, waterGoal = 8;
 
   const name = profile?.full_name?.split(' ')[0] || 'друг';
@@ -70,6 +73,7 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
                 { label: 'Белки', value: protein, goal: proteinGoal, color: '#58B47A', unit: 'г' },
                 { label: 'Углеводы', value: carbs, goal: carbsGoal, color: '#77B7F7', unit: 'г' },
                 { label: 'Жиры', value: fat, goal: fatGoal, color: '#FF8A65', unit: 'г' },
+                { label: 'Клетчатка', value: fiber, goal: fiberGoal, color: '#A78BFA', unit: 'г' },
               ].map((m) => (
                 <div key={m.label}>
                   <div className="flex items-center justify-between mb-1.5">

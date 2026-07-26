@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from './supabase';
+import { calculate } from './calculator';
 import type { Database } from '@/types/supabase';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -270,6 +271,46 @@ export function useWeight(days: number = 90) {
   }, []);
 
   return { logs, loading, log, reload: load };
+}
+
+// ============================================================ useTargets
+// Считает дневные цели (КБЖУ + клетчатка) из профиля и ПОСЛЕДНЕГО веса.
+//
+// Берёт последние данные: профиль из profiles, вес — последняя запись из
+// weight_log. Если профиль неполон (нет пола/роста/веса) — возвращает
+// безопасные дефолты (2000 ккал), чтобы UI не падал.
+export function useTargets() {
+  const { profile } = useProfile();
+  const { logs: weightLogs } = useWeight(90);
+
+  // Последний вес: weight_log отсортирован по возрастанию, последний = текущий.
+  const currentWeight = weightLogs.length ? Number(weightLogs[weightLogs.length - 1].weight) : null;
+
+  if (!profile || !profile.sex || !profile.height || currentWeight === null || !profile.age) {
+    // Профиль неполон — дефолты (как было в моках).
+    return {
+      targets: {
+        target_kcal: 2000, protein_g: 120, fat_g: 65, carbs_g: 250, fiber_g: 25,
+        bmr: 0, tdee: 0, condition_label: '', activity_label: '', goal_label: '', warnings: [],
+      } as ReturnType<typeof calculate>,
+      ready: false,
+      currentWeight,
+    };
+  }
+
+  const targets = calculate({
+    sex: profile.sex,
+    age: profile.age,
+    weight: currentWeight,
+    height: profile.height,
+    activity: profile.activity,
+    goal: profile.goal,
+    condition: profile.condition,
+    life_stage: profile.life_stage,
+    formula: profile.formula ?? 'who',
+  });
+
+  return { targets, ready: true, currentWeight };
 }
 
 export type { Profile, DiaryEntry, WeightLog, WaterLog };
