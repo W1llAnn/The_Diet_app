@@ -27,11 +27,11 @@ web/frontend/
 ```bash
 cd web/frontend
 npm install        # один раз
-npm run dev        # http://localhost:5173/
+npm run dev        # http://localhost:5173/The_Diet_app/
 ```
 
-> Vite поднимает dev-сервер в корне (`http://localhost:5173/`) — `base` в
-> `vite.config.ts` не задан, т.к. Vercel деплоит сайт в корень домена.
+> `base` в `vite.config.ts` настроен под GitHub Pages (`/The_Diet_app/`),
+> поэтому локальный адрес тоже содержит этот префикс.
 
 ## Сборка
 
@@ -41,33 +41,28 @@ npm run build      # результат в web/frontend/dist/
 npm run preview    # локальный предпросмотр собранной версии
 ```
 
-## Публикация на Vercel
+## Публикация на GitHub Pages
 
-Vercel подключается к GitHub и автоматически деплоит при пуше. Репозиторий
-остаётся приватным, бесплатный тариф не требует карты.
+GitHub Pages бесплатен для **публичных** репозиториев (для приватных нужен
+платный GitHub Pro). Поэтому репо `The_Diet_app` должно быть публичным:
+**Settings → General → Danger Zone → Change visibility → Public.**
 
-### Одноразовая настройка (на сайте Vercel)
+### Одноразовая настройка (в репозитории)
 
-1. **vercel.com** → залогинься через GitHub (OAuth, даёт доступ к репо).
-2. **Add New → Project** → выбери репозиторий `W1llAnn/The_Diet_app`.
-3. В настройках проекта укажи:
-   - **Framework Preset:** `Vite`
-   - **Root Directory:** `web/frontend`
-   - Build / Install / Output Vercel определит сам (или возьмёт из `vercel.json`).
-4. **Deploy.** Первый билд идёт ~1 мин.
+1. Убедись, что репозиторий публичный (см. выше).
+2. **Settings → Pages → Build and deployment → Source: `GitHub Actions`.**
 
-После этого каждый пуш в любую ветку автоматически собирает превью-деплой
-(`<branch>.the-diet-app.vercel.app`), а мерж в `main` обновляет продакшен.
+### Автоматический деплой
 
-### Зачем `vercel.json`
+При пуше в ветку `ui` (изменения в `web/frontend/`) срабатывает workflow
+`.github/workflows/deploy-ui.yml`: ставит Node 24, зависимости, собирает
+Vite и деплоит `dist/` на Pages. Сайт: `https://w1llann.github.io/The_Diet_app/`
 
-`web/frontend/vercel.json` фиксирует build-команды и добавляет SPA-rewrite:
-все маршруты отдаются в `index.html`, чтобы внутренние страницы приложения
-работали при прямом переходе по ссылке.
+Запустить вручную: **Actions → Deploy UI to GitHub Pages → Run workflow.**
 
-> Раньше проект был заточен под GitHub Pages (требует `base` в `vite.config.ts`
-> и публичного репо). Для приватного репо без оплаты GitHub Pages недоступен,
-> поэтому перешли на Vercel — `base` убран, сайт живёт в корне домена.
+> Workflow сам включает Pages (через `configure-pages enablement: true`),
+> но если в Settings → Pages стоит Source «Deploy from a branch» — переключи
+> на «GitHub Actions», иначе деплой упадёт.
 
 ## Зависимости
 
