@@ -2,25 +2,32 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase';
 
 /**
- * Supabase-клиент для всего приложения.
+ * Supabase-ключи проекта Vivora.
  *
- * Ключи читаются из Vite-окружения (.env, префикс VITE_ обязателен).
- * Анонимный ключ (anon) публичен по дизайну — безопасность держится
- * на Row Level Security в Supabase, а не на секретности ключа.
+ * Эти значения ПУБЛИЧНЫ по дизайну: anon-ключ зашивается в клиентский бандл
+ * и виден всем в браузере. Это НЕ секрет — безопасность держится на Row Level
+ * Security в Supabase (profiles: читать/писать только свою строку; is_admin
+ * защищён триггером), а не на скрытости ключа.
  *
- * Тип Database (опционально) даёт автодополнение таблиц/колонок в редакторе.
+ * Зашиты в код (а не в .env), чтобы быть доступными при сборке на GitHub
+ * Actions — там локальный .env не существует, и иначе деплой падал бы с
+ * 'supabaseUrl is required'. Для статического хостинга (GitHub Pages)
+ * это стандартный подход.
  */
-const url = import.meta.env.VITE_SUPABASE_URL;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_URL = 'https://yawwjjfxxkrwwqxxblxf.supabase.co';
+const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlhd3dqamZ4eGtyd3dxeHhibHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwNzUyNDMsImV4cCI6MjEwMDY1MTI0M30.aJQfGACVNsZG16IeDmNE66oXpmMkFnobxpUcsb5tnPM';
+
+// Локальный .env (если есть) перекрывает зашитые значения — удобно для
+// тестовых проектов без правки кода.
+const url = import.meta.env.VITE_SUPABASE_URL ?? SUPABASE_URL;
+const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? SUPABASE_ANON_KEY;
 
 if (!url || !anonKey) {
-  console.error(
-    '[supabase] Не заданы VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. ' +
-      'Скопируй .env.example в .env и подставь значения из Supabase.'
-  );
+  console.error('[supabase] Не заданы ключи Supabase — проверь src/lib/supabase.ts.');
 }
 
-export const supabase = createClient<Database>(url ?? '', anonKey ?? '', {
+export const supabase = createClient<Database>(url, anonKey, {
   auth: {
     // Хранить сессию в localStorage, чтобы не логиниться при каждом заходе.
     persistSession: true,

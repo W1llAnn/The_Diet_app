@@ -68,7 +68,7 @@ Vite и деплоит `dist/` на Pages. Сайт: `https://w1llann.github.io/
 
 - React 18, react-dom
 - TailwindCSS 3 (стили), lucide-react (иконки)
-- `@supabase/supabase-js` (авторизация/данные — ключи в `.env`, не коммитить)
+- `@supabase/supabase-js` (авторизация/данные — публичные anon-ключи зашиты в `src/lib/supabase.ts`, безопасность на RLS)
 
 ## Дорожная карта интеграции с бэкендом
 
