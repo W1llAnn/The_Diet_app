@@ -1,0 +1,77 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#58B47A',
+          50: '#F0FAF4',
+          100: '#D6F0E1',
+          200: '#ACE1C3',
+          300: '#82D2A5',
+          400: '#6DC490',
+          500: '#58B47A',
+          600: '#449E65',
+          700: '#338851',
+          800: '#22723C',
+          900: '#115C28',
+        },
+        accent: {
+          DEFAULT: '#FF8A65',
+          50: '#FFF3EE',
+          100: '#FFE0D3',
+          200: '#FFC1A8',
+          300: '#FFA27D',
+          400: '#FF9670',
+          500: '#FF8A65',
+          600: '#E87050',
+          700: '#CC5A3E',
+          800: '#A8432B',
+          900: '#842C1A',
+        },
+        info: {
+          DEFAULT: '#77B7F7',
+          50: '#EEF6FE',
+          100: '#D5E9FC',
+          200: '#ABD3FA',
+          300: '#82BDF7',
+          400: '#77B7F7',
+          500: '#5AA3F3',
+          600: '#3D8FEF',
+          700: '#2070CC',
+          800: '#1554A0',
+          900: '#0A3874',
+        },
+        cream: '#FAF8F4',
+        surface: '#FFFFFF',
+        border: '#E7E7E7',
+        'text-primary': '#2C2C2C',
+        'text-secondary': '#6F6F6F',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        '2xl': '20px',
+        xl: '16px',
+        lg: '14px',
+      },
+      boxShadow: {
+        soft: '0 2px 16px rgba(0,0,0,0.06)',
+        card: '0 4px 24px rgba(0,0,0,0.08)',
+        float: '0 8px 32px rgba(0,0,0,0.12)',
+      },
+      spacing: {
+        18: '4.5rem',
+        22: '5.5rem',
+      },
+      backgroundImage: {
+        'gradient-primary': 'linear-gradient(135deg, #58B47A 0%, #82D2A5 100%)',
+        'gradient-warm': 'linear-gradient(135deg, #FAF8F4 0%, #F0FAF4 100%)',
+        'gradient-hero': 'linear-gradient(135deg, #F0FAF4 0%, #FAF8F4 50%, #FFF3EE 100%)',
+      },
+    },
+  },
+  plugins: [],
+};

@@ -5,3 +5,15 @@ pandas==3.0.3
 numpy==2.4.6
 requests==2.34.2
 tqdm==4.68.4
+# Эмбеддинги для векторного поиска продуктов (notebooks/06_embeddings_test.ipynb)
+torch==2.13.0  # CPU; ставить через --index-url https://download.pytorch.org/whl/cpu
+transformers==5.14.1
+openai==2.52.0
+python-dotenv==1.2.2
+scipy==1.17.1
+matplotlib==3.11.1
+# Тесты
+pytest==9.1.1
+# Подключение к PostgreSQL (продакшен). Локально используется встроенный sqlite3.
+# Установите при переходе на managed PostgreSQL:
+#   psycopg[binary]==3.2.4  # или актуальную версию

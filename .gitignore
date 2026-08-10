@@ -35,6 +35,10 @@ backups/
 *.sql
 *.sqlite
 *.sqlite3
+# Локальная база данных — не в git (мигрируется из unified_foods.csv).
+data/diet.db
+# schema.sql — это код схемы, нужен в репо (исключение из *.sql).
+!diet/schema.sql
 
 # Local tooling
 .DS_Store
@@ -69,3 +73,12 @@ data/downloads/
 data/foundation_foods/
 data/gi/
 data/processed/
+
+# Frontend (web/) — Node.js / Vite
+web/node_modules/
+web/dist/
+web/dist-ssr/
+web/.env
+web/.env.*
+!web/.env.example
+web/*.local

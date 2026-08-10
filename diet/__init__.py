@@ -55,12 +55,21 @@ from .checks import (
     check_day,
     check_portion,
     resolve_limits,
+    check_gl_portion,
+    check_gl_meal,
+    check_gl_day,
+    gl_targets_for,
 )
 from .diary import (
     FoodLog,
     suggest,
     COL_LABELS,
 )
+from .gi import (
+    glycemic_load,
+    gl_label,
+)
+from . import db
 
 __all__ = [
     "UserProfile",
@@ -89,7 +98,16 @@ __all__ = [
     "check_day",
     "check_portion",
     "resolve_limits",
+    # гликемическая нагрузка
+    "check_gl_portion",
+    "check_gl_meal",
+    "check_gl_day",
+    "gl_targets_for",
+    "glycemic_load",
+    "gl_label",
     "FoodLog",
     "suggest",
     "COL_LABELS",
+    # база данных
+    "db",
 ]

@@ -1,8 +1,18 @@
 # The Diet App
 
 Приложение для расчёта питания (КБЖУ) и диет для разных групп здоровья.
-Реализованы: модуль нормы калорий и БЖУ (с учётом заболеваний и стадий жизни) и
-локальная база продуктов из двух источников (USDA + Open Food Facts).
+Реализованы:
+- модуль нормы калорий и БЖУ (с учётом заболеваний и стадий жизни);
+- база продуктов из двух источников (USDA + Open Food Facts) с гликемическим
+  индексом (ГИ) и метками совместимости с диабетом;
+- **база данных** (SQLite локально / PostgreSQL в проде) с дневником питания
+  и пользователями;
+- **гликемическая нагрузка (ГН)** — аддитивная метрика качества углеводов,
+  ключевая для диабета: проверка порций, приёмов пищи и итогов дня;
+- **UI-каркас «Vivora»** (`web/`) — React + Vite + TypeScript + Tailwind:
+  28 экранов (дневник, поиск продуктов, AI-ассистент, профиль, онбординг…),
+  дизайн-система (палитра/типографика/тени). Пока работает на мок-данных,
+  интеграция с backend — следующий этап.
 
 ## Структура
 
@@ -10,22 +20,44 @@
 The_Diet_app/
 ├── diet/                  # пакет с логикой расчёта КБЖУ
 │   ├── profile.py         #   данные человека + справочники (активность, цель)
-│   ├── conditions.py      #   нозологические группы (диабет, ХБП, ожирение, ССЗ)
+│   ├── conditions.py      #   нозологические группы + нормы ГН для диабета
 │   ├── life_stages.py     #   стадии жизни (спортсмен, пожилой, беременность...)
-│   └── calculator.py      #   BMR, TDEE, целевые ккал, БЖУ
+│   ├── calculator.py      #   BMR, TDEE, целевые ккал, БЖУ
+│   ├── food_groups.py     #   классификатор категорий продуктов по названию
+│   ├── food_db.py         #   доступ к CSV-базе (USDA+OFF) + FoodItem
+│   ├── gi.py              #   гликемический индекс + нагрузка (glycemic_load)
+│   ├── checks.py          #   проверки микроэлементов и ГН vs норм болезни
+│   ├── diary.py           #   дневник (CSV-режим) + подбор добора
+│   ├── db.py              #   ← слой доступа к БД (SQLite / PostgreSQL)
+│   └── schema.sql         #   DDL: products, users, diary_entries
 ├── scripts/               # пайплайн подготовки базы продуктов
 │   ├── 01_prepare_usda.py #   распаковка USDA + нормализованная таблица
 │   ├── 02_download_off.py #   скачивание дампа Open Food Facts (~12 ГБ)
-│   └── 03_filter_off_ru.py#   фильтрация российских продуктов из дампа
+│   ├── 03_filter_off_ru.py#   фильтрация российских продуктов из дампа
+│   ├── 04_prepare_gi.py   #   подготовка ГИ по категориям (Sydney GI DB)
+│   ├── 05_build_unified.py#   сборка unified_foods.csv (ГИ + метки диабета)
+│   └── 06_load_db.py      #   ← миграция unified_foods.csv → база данных
 ├── notebooks/
 │   ├── 01_kbzhu.ipynb     # расчёт нормы калорий и БЖУ
-│   └── 02_products_explore.ipynb  # обзор базы продуктов
+│   ├── 02_products_explore.ipynb  # обзор базы продуктов
+│   └── 07_glycemic_load_demo.ipynb # ← демо ГН + БД (диабет, «рис+мясо»)
+├── tests/                 # pytest: diet.gi, diet.db, diet.checks (ГН)
 ├── data/
 │   ├── downloads/         # исходные архивы (USDA zip, OFF dump ~74 ГБ)
 │   ├── foundation_foods/  # распакованный USDA
+│   ├── diet.db            # ← локальная SQLite (мигрируется, в .gitignore)
 │   └── processed/         # ← готовые таблицы:
 │       ├── usda_foods.csv #   469 базовых продуктов (КБЖУ + микроэлементы)
-│       └── off_ru_foods.csv #  российские брендированные продукты из OFF
+│       ├── off_ru_foods.csv #  российские брендированные продукты из OFF
+│       ├── gi_by_category.csv # базовый ГИ по 19 категориям (Sydney)
+│       └── unified_foods.csv #  ~31 тыс. продуктов с gi, food_group, diabetes_label
+├── web/                   # ← UI «Vivora» (React + Vite + TS + Tailwind)
+│   ├── src/
+│   │   ├── pages/         #   28 экранов: Dashboard, Diary, Search, Product, AIAssistant...
+│   │   ├── components/    #   layout (AppShell, Sidebar, BottomNav), Vivi, ProgressRing
+│   │   └── data/content.ts#   типы (FoodItem, MealEntry) + мок-данные
+│   ├── package.json       #   React 18, Vite, Tailwind, lucide-react
+│   └── tailwind.config.js #   дизайн-система (палитра, тени, градиенты)
 ├── .venv/
 └── requirements.txt
 ```
@@ -51,6 +83,57 @@ The_Diet_app/
 > Дамп OFF (~74 ГБ распакованный) нужен только для пересборки РФ-таблицы.
 > Готовые таблицы в `data/processed/` — компактные, можно работать без дампа.
 
+## База данных и дневник питания
+
+Помимо CSV-таблиц, есть полноценная БД (`diet/db.py`, схема `diet/schema.sql`):
+- **SQLite локально** (`data/diet.db`) — без сервера, для разработки и ноутбуков;
+- **PostgreSQL в проде** — управляемый инстанс РФ-провайдера, через `DIET_DB_URL`.
+
+Таблицы: `products` (справочник с ГИ и метками диабета), `users` (профили + нормы),
+`diary_entries` (записи дневника: продукт + граммы + приём пищи + день).
+
+ГН не хранится — считается на лету (`gi/100 × углеводы × масса/100`), т.к.
+зависит от порции и аддитивна. Итоги дня/приёма агрегируются SQL-запросом с JOIN.
+
+### Миграция данных в БД
+
+```bash
+# Заполнить БД из unified_foods.csv (~31 тыс. продуктов, идемпотентно):
+./.venv/Scripts/python.exe scripts/06_load_db.py
+```
+
+### Подключение PostgreSQL (продакшен)
+
+```bash
+# 1. Поднять managed PostgreSQL у РФ-провайдера (Selectel / Timeweb / Cloud.ru / VK).
+# 2. Установить драйвер:
+./.venv/Scripts/python.exe -m pip install "psycopg[binary]"
+# 3. Задать URL и мигрировать:
+DIET_DB_URL=postgresql://user:pass@host:5432/dbname \
+    ./.venv/Scripts/python.exe scripts/06_load_db.py
+```
+
+Слой `diet/db.py` диалектно-нейтрален: те же функции `init_db`,
+`search_products`, `add_entry`, `day_totals` работают с обоими движками.
+
+## Гликемическая нагрузка (ГН)
+
+ГИ — индекс конкретного продукта (0..100). **ГН — аддитивная метрика**, её
+можно складывать по ингредиентам блюда и за день:
+
+```
+ГН порции = (ГИ / 100) × углеводы порции (г)
+```
+
+Поэтому «рис + мясо»: мясо даёт ГН ≈ 0 (углеводов нет), рис — основную ГН
+блюда. «Рис нельзя диабетику» = «нельзя **большую** порцию», а не запрет.
+
+Нормы при диабете (`conditions.diabetes_t2.gl_targets`):
+- приём пищи ≤ 15 (warn), день < 80;
+- проверки: `diet.checks.check_gl_portion` / `check_gl_meal` / `check_gl_day`.
+
+См. `notebooks/07_glycemic_load_demo.ipynb` — сквозное демо.
+
 ## Установка (один раз)
 
 Окружение `.venv` уже создано (Python 3.11.9). Если нужно пересоздать:
@@ -72,6 +155,35 @@ python -m venv .venv
 Откроется браузер → открой `notebooks/01_kbzhu.ipynb`. Убедись, что ядро справа
 вверху — **Python (diet)**. Заполни ячейку «Данные человека» и выполни все ячейки
 (`Shift+Enter`).
+
+## UI (web/) — Vivora
+
+Каркас фронтенда на React + Vite + TypeScript + Tailwind. Пока работает на
+мок-данных (`src/data/content.ts`); интеграция с backend (`diet/` через API) —
+следующий этап (см. `ROADMAP.md`, направление D).
+
+```bash
+cd web
+npm install      # один раз
+npm run dev      # дев-сервер на http://localhost:5173
+npm run build    # прод-сборка в web/dist
+npm run typecheck
+```
+
+Дизайн-система (палитра, типографика, тени, градиенты) — в `web/tailwind.config.js`.
+Навигация — через `useState` в `src/App.tsx` (не react-router); список экранов —
+тип `Page` в `src/data/content.ts`.
+
+## Тесты
+
+```bash
+./.venv/Scripts/python.exe -m pytest tests/ -v
+```
+
+Покрытие: `diet.gi` (формула ГН, аддитивность, метки), `diet.db` (схема,
+FK, поиск, итоги дня/приёма с ГН, временная БД в `tmp_path`), `diet.checks`
+(пороги ГН для диабета: warn/danger/info). Тесты БД используют временную
+SQLite и не затрагивают `data/diet.db`.
 
 ## Что считает модуль КБЖУ
 
