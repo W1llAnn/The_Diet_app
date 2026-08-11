@@ -55,6 +55,9 @@ CREATE INDEX IF NOT EXISTS idx_products_diabetes_label
 CREATE TABLE IF NOT EXISTS users (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     name            TEXT DEFAULT '',
+    -- аутентификация (D4): NULL для профилей без входа (старые данные).
+    email           TEXT DEFAULT NULL,       -- логин; уникальность проверяется в Python
+    password_hash   TEXT DEFAULT NULL,       -- bcrypt-хеш; NULL — нельзя залогиниться
     -- антропометрия (как в UserProfile):
     sex             TEXT NOT NULL,           -- 'male' / 'female'
     age             INTEGER NOT NULL,

@@ -209,7 +209,49 @@ def init_db(path: Path | str | None = None) -> None:
             # PostgreSQL: выполняем каждый оператор отдельно.
             for stmt in _split_sql(ddl):
                 conn.execute(stmt)
+        # Миграции: добираем колонки, добавленные в schema.sql после того, как
+        # БД уже была создана. CREATE TABLE IF NOT EXISTS не обновляет схему
+        # существующих таблиц, поэтому для свежих колонок (email, password_hash
+        # — D4 аутентификация) делаем ALTER TABLE ADD COLUMN, терпимо относясь
+        # к «колонка уже есть» (идемпотентность).
+        _migrate(conn)
         conn.commit()
+
+
+def _migrate(conn: _Conn) -> None:
+    """Добор колонок, добавленных в схему после релиза.
+
+    Каждая колонка добавляется через ALTER TABLE ADD COLUMN; если она уже
+    существует — игнорируем ошибку. Работает и для SQLite, и для PostgreSQL.
+    Список миграций растёт по мере эволюции схемы.
+    """
+    migrations = [
+        # (table, column, column-def)
+        ("users", "email", "TEXT DEFAULT NULL"),
+        ("users", "password_hash", "TEXT DEFAULT NULL"),
+    ]
+    for table, column, coldef in migrations:
+        if not _column_exists(conn, table, column):
+            try:
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {coldef}")
+            except Exception:
+                # На конкурентном старте двух процессов один добавит колонку,
+                # второй упадёт — это нормально, колонка в итоге появится.
+                pass
+
+
+def _column_exists(conn: _Conn, table: str, column: str) -> bool:
+    """Есть ли колонка в таблице (диалектно-нейтрально через PRAGMA/information_schema)."""
+    if _is_postgres():
+        cur = conn.execute(
+            "SELECT 1 FROM information_schema.columns "
+            "WHERE table_name = %s AND column_name = %s",
+            (table, column),
+        )
+        return cur.fetchone() is not None
+    cur = conn.execute(f"PRAGMA table_info({table})")
+    # PRAGMA table_info: строки (cid, name, type, notnull, dflt_value, pk).
+    return any(row[1] == column for row in cur.fetchall())
 
 
 def _adapt_ddl_for_postgres(ddl: str) -> str:
@@ -342,19 +384,22 @@ def search_products(conn: _Conn, query: str, limit: int = 20) -> pd.DataFrame:
 
 # ───────────────────────── users ─────────────────────────────────────────
 
-def add_user(conn: _Conn, profile, result, name: str = "") -> int:
+def add_user(conn: _Conn, profile, result, name: str = "",
+             email: str | None = None) -> int:
     """Сохранить профиль + рассчитанные нормы (NutritionResult) в users.
 
     profile — UserProfile; result — NutritionResult из calculate().
+    email — опционально, для регистрации с логином (пароль задаётся отдельно
+    через set_password, т.к. хеширование — отдельная забота слоя auth).
     Возвращает id нового пользователя.
     """
     cols = [
-        "name", "sex", "age", "weight", "height", "activity", "goal",
+        "name", "email", "sex", "age", "weight", "height", "activity", "goal",
         "condition_key", "life_stage", "formula",
         "target_kcal", "protein_g", "fat_g", "carbs_g", "fiber_g",
     ]
     vals = [
-        name, profile.sex, profile.age, profile.weight, profile.height,
+        name, email, profile.sex, profile.age, profile.weight, profile.height,
         profile.activity, profile.goal, result.condition, result.life_stage,
         result.formula, result.target_kcal, result.protein_g, result.fat_g,
         result.carbs_g, result.fiber_g,
@@ -378,6 +423,32 @@ def get_user(conn: _Conn, user_id: int) -> dict | None:
     cols = [d[0] for d in cur.description]
     row = cur.fetchone()
     return dict(zip(cols, row)) if row else None
+
+
+def get_user_by_email(conn: _Conn, email: str) -> dict | None:
+    """Профиль пользователя по email (для логина), или None.
+
+    Сравнение регистронезависимое — типично для email-логинов. Уникальность
+    email в SQLite не обеспечена схемой (нет UNIQUE-индекса), поэтому при
+    регистрации дополнительно проверяем отсутствие в Python.
+    """
+    op = "ILIKE" if _is_postgres() else "LIKE"
+    ph = "%s" if _is_postgres() else "?"
+    cur = conn.execute(
+        f"SELECT * FROM users WHERE email {op} {ph} LIMIT 1", (email,)
+    )
+    cols = [d[0] for d in cur.description]
+    row = cur.fetchone()
+    return dict(zip(cols, row)) if row else None
+
+
+def set_password(conn: _Conn, user_id: int, password_hash: str) -> None:
+    """Сохранить bcrypt-хеш пароля для пользователя."""
+    ph = "%s" if _is_postgres() else "?"
+    conn.execute(
+        f"UPDATE users SET password_hash = {ph} WHERE id = {ph}",
+        (password_hash, user_id),
+    )
 
 
 # ───────────────────────── diary_entries ─────────────────────────────────

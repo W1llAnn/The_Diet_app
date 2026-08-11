@@ -12,6 +12,17 @@ openai==2.52.0
 python-dotenv==1.2.2
 scipy==1.17.1
 matplotlib==3.11.1
+# API (FastAPI). D1-D3 роадмапа: мост между UI (web/) и доменной логикой (diet/).
+# uvicorn — ASGI-сервер для локального запуска; httpx нужен для TestClient.
+fastapi==0.141.1
+uvicorn[standard]==0.52.1
+httpx==0.28.1
+# Аутентификация (D4): JWT-токены + хеширование паролей.
+# Прямой bcrypt (без passlib) — passlib ломается на bcrypt 5.x.
+PyJWT==2.13.0
+bcrypt==5.0.0
+# Валидация email в Pydantic-схемах (D5).
+email-validator==2.3.0
 # Тесты
 pytest==9.1.1
 # Подключение к PostgreSQL (продакшен). Локально используется встроенный sqlite3.
